@@ -1,0 +1,139 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="Medication Supply Calculator"
+  description="Work out the date your prescription runs out and the date to request a refill, from your quantity and daily dose. Pure arithmetic, done in your browser."
+  h1="Medication supply calculator"
+  lede="Running out of a medication over a weekend or on vacation is an avoidable problem. This works out your run-out date and a sensible day to request the refill."
+>
+  <form class="tool" id="supply-form" autocomplete="off" slot="tool">
+    <div class="field-row">
+      <div class="field">
+        <label for="quantity">Quantity you have</label>
+        <input id="quantity" type="number" inputmode="decimal" min="1" step="any" placeholder="90" />
+        <span class="hint">Tablets, capsules, or doses on hand or being picked up.</span>
+      </div>
+      <div class="field">
+        <label for="per-day">Taken per day</label>
+        <input id="per-day" type="number" inputmode="decimal" min="0.1" step="any" placeholder="2" />
+        <span class="hint">e.g. 2 for one tablet twice a day, 0.5 for half a tablet daily.</span>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="start-date">Counting from</label>
+        <input id="start-date" type="date" />
+        <span class="hint">Today, or the pickup date.</span>
+      </div>
+      <div class="field">
+        <label for="lead-days">Refill lead time (days)</label>
+        <input id="lead-days" type="number" inputmode="numeric" min="0" max="30" step="1" value="7" />
+        <span class="hint">How far ahead you want the reminder. 7 covers most pharmacy and prior-auth delays.</span>
+      </div>
+    </div>
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Calculate</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Request your refill by
+      </p>
+      <p class="big" id="refill-date">-</p>
+      <p style="margin:.5rem 0 0" id="runout-line"></p>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Arithmetic only. Nothing about your medication is sent or stored.
+    </p>
+  </form>
+
+  <Callout tone="warn" title="This calculates dates, not doses">
+    <p style="margin:0">
+      Enter the dose exactly as prescribed - this tool has no opinion on what you should
+      take, and changing how you take a medication is a conversation with your prescriber
+      or pharmacist, never with a calculator. If your dose changed recently, recalculate
+      from the new one.
+    </p>
+  </Callout>
+
+  <h2>Why the lead time matters</h2>
+  <p>Refills fail for boring, predictable reasons, and all of them consume days:</p>
+  <ul>
+    <li>The prescription has no refills left and the prescriber's office takes 2-3 business days to respond</li>
+    <li>The insurance requires a new prior authorization at the start of a plan year</li>
+    <li>The pharmacy is out of stock and has to order it</li>
+    <li>The refill lands on a holiday weekend</li>
+  </ul>
+  <p>
+    A week of lead time absorbs nearly all of this. For a medication where missing days
+    matters, ask your pharmacy about automatic refills and medication synchronization -
+    most offer both, and syncing everything to one pickup date is one of the better
+    arguments for <a href="/tips/choosing-one-pharmacy/">using a single pharmacy</a>.
+  </p>
+
+  <h2>The 90-day question</h2>
+  <p>
+    If you refill the same maintenance medication every month, ask your prescriber
+    whether a 90-day supply is appropriate and ask your plan what it costs - 90-day fills
+    are often cheaper per dose, and they cut the number of chances per year for a refill
+    to go wrong from twelve to four.
+  </p>
+  <p>
+    Tracking what you actually take, including over-the-counter items, is a separate and
+    more important habit - the <a href="/tools/trackers/">medication list tracker</a> is
+    the sheet for that.
+  </p>
+</Tool>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const fmt = (d: Date) =>
+    d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  document.getElementById('calc')!.addEventListener('click', () => {
+    const result = document.getElementById('result')!;
+    const qty = parseFloat($('quantity').value);
+    const perDay = parseFloat($('per-day').value);
+    const lead = parseInt($('lead-days').value, 10) || 0;
+
+    let start: Date;
+    if ($('start-date').value) {
+      const [y, m, d] = $('start-date').value.split('-').map(Number);
+      start = new Date(y, m - 1, d);
+    } else {
+      start = new Date();
+      start.setHours(0, 0, 0, 0);
+    }
+
+    if (!isFinite(qty) || !isFinite(perDay) || qty <= 0 || perDay <= 0) {
+      result.hidden = true;
+      return;
+    }
+
+    const days = Math.floor(qty / perDay);
+    const runout = new Date(start);
+    runout.setDate(runout.getDate() + days);
+    const refill = new Date(runout);
+    refill.setDate(refill.getDate() - lead);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    (document.getElementById('refill-date') as HTMLElement).textContent = fmt(refill);
+    (document.getElementById('runout-line') as HTMLElement).textContent =
+      refill < today
+        ? `Your supply lasts ${days} days and runs out ${fmt(runout)} - inside your lead time already, so request the refill now.`
+        : `Your supply lasts ${days} days and runs out on ${fmt(runout)}.`;
+    result.hidden = false;
+  });
+
+  (document.getElementById('supply-form') as HTMLFormElement).addEventListener('reset', () =>
+    setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
+  );
+</script>

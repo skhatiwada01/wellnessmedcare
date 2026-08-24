@@ -1,0 +1,250 @@
+---
+import Base from '../layouts/Base.astro';
+import Support from '../components/Support.astro';
+import Callout from '../components/Callout.astro';
+import { TEMPLATES } from '../data/templates';
+
+/** Unique [placeholders] in source order, so each is asked for exactly once. */
+function placeholders(body: string): string[] {
+  const found = body.match(/\[[^\]\n]+\]/g) ?? [];
+  return [...new Set(found)];
+}
+
+const fieldId = (tplId: string, ph: string) =>
+  `${tplId}--${ph.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase()}`;
+---
+
+<Base
+  title="Letter Templates"
+  description="Free fill-in-the-blank letters for requesting an itemized bill, disputing a charge, appealing a denial, and applying for hospital financial assistance. Download as Word."
+>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose prose-center">
+      <h1>Letter templates</h1>
+      <p class="lede">
+        Six letters that cover most of what you will ever need to send a hospital, an
+        insurer, or a collector. Fill in the blanks below and download a Word file.
+      </p>
+
+      <Callout tone="note" title="Nothing you type here leaves your browser">
+        <p style="margin:0">
+          These forms run entirely on your device. Your name, account numbers, and dates
+          are never sent to us or stored anywhere. Close the tab and they are gone.
+        </p>
+      </Callout>
+
+      <Callout tone="warn" title="How to use these">
+        <p style="margin:0 0 .6rem">
+          Fill in what you can and leave the rest - anything you skip stays in brackets so
+          you can finish it in Word. Delete any paragraph that does not apply to you; a
+          short, specific letter works better than a long, hedged one.
+        </p>
+        <p style="margin:0">
+          These are starting points drafted for a general situation, not legal advice, and
+          sending one does not guarantee any outcome. See our
+          <a href="/disclaimer/">disclaimer</a>.
+        </p>
+      </Callout>
+
+      <nav aria-label="Templates on this page">
+        <ul>
+          {TEMPLATES.map((t) => <li><a href={`#${t.id}`}>{t.title}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="prose prose-center" style="max-width:80ch">
+      {
+        TEMPLATES.map((t) => {
+          const phs = placeholders(t.body);
+          return (
+            <section class="tpl" id={t.id}>
+              <h2>{t.title}</h2>
+              <p>{t.when}</p>
+              {t.guide && (
+                <p>
+                  <a href={t.guide}>Read the full guide on this &rarr;</a>
+                </p>
+              )}
+
+              <form class="tpl-form" data-template={t.id} autocomplete="off">
+                <fieldset>
+                  <legend>Fill in your details</legend>
+                  <div class="tpl-fields">
+                    {phs.map((ph) => (
+                      <div class="field">
+                        <label for={fieldId(t.id, ph)}>{ph.slice(1, -1)}</label>
+                        <input
+                          id={fieldId(t.id, ph)}
+                          type="text"
+                          data-placeholder={ph}
+                          placeholder={ph.slice(1, -1)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <div class="tool-actions">
+                  <button class="btn" type="button" data-action="docx">
+                    Download as Word
+                  </button>
+                  <button class="btn btn-ghost" type="button" data-action="copy">
+                    Copy text
+                  </button>
+                  <button class="btn btn-ghost" type="button" data-action="print">
+                    Print
+                  </button>
+                  <button class="btn btn-ghost" type="reset" data-action="reset">
+                    Clear
+                  </button>
+                </div>
+              </form>
+
+              <div class="tpl-box">
+                <div class="tpl-bar">Preview</div>
+                <pre id={`tpl-${t.id}`} data-source={t.body}>{t.body}</pre>
+              </div>
+            </section>
+          );
+        })
+      }
+      <Support context="tool" />
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Loaded on demand - the docx library is ~350KB and most readers never click download.
+  const loadDocx = () => import('../scripts/docx');
+
+  /** Replace every [placeholder] that has a non-empty value; leave the others visible. */
+  function render(form: HTMLFormElement, source: string): string {
+    let out = source;
+    form.querySelectorAll<HTMLInputElement>('input[data-placeholder]').forEach((input) => {
+      const value = input.value.trim();
+      if (!value) return;
+      const ph = input.dataset.placeholder!;
+      out = out.split(ph).join(value);
+    });
+    return out;
+  }
+
+  function slug(s: string) {
+    return s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
+  document.querySelectorAll<HTMLFormElement>('.tpl-form').forEach((form) => {
+    const id = form.dataset.template!;
+    const pre = document.getElementById(`tpl-${id}`) as HTMLPreElement;
+    const source = pre.dataset.source ?? pre.textContent ?? '';
+    const heading = form.closest('section')?.querySelector('h2')?.textContent ?? 'letter';
+
+    const update = () => {
+      pre.textContent = render(form, source);
+    };
+    form.addEventListener('input', update);
+    form.addEventListener('reset', () => setTimeout(update, 0));
+
+    form.querySelectorAll<HTMLButtonElement>('button[data-action]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const text = render(form, source);
+        const action = btn.dataset.action;
+
+        if (action === 'docx') {
+          const original = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Preparing...';
+          try {
+            const { downloadLetter } = await loadDocx();
+            await downloadLetter(text, `${slug(heading)}.docx`);
+            btn.textContent = 'Downloaded';
+          } catch {
+            btn.textContent = 'Download failed';
+          }
+          setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = original;
+          }, 2000);
+        }
+
+        if (action === 'copy') {
+          const original = btn.textContent;
+          try {
+            await navigator.clipboard.writeText(text);
+            btn.textContent = 'Copied';
+          } catch {
+            btn.textContent = 'Select and press Ctrl+C';
+          }
+          setTimeout(() => {
+            btn.textContent = original;
+          }, 2000);
+        }
+
+        if (action === 'print') window.print();
+      });
+    });
+  });
+</script>
+
+<style>
+  .tpl {
+    scroll-margin-top: 5rem;
+    padding-bottom: 1.5rem;
+  }
+  .tpl-form fieldset {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem 0.4rem;
+    margin: 1.25rem 0 0;
+    background: var(--surface);
+  }
+  .tpl-form legend {
+    padding: 0 0.5rem;
+    font-weight: 650;
+    font-size: 0.9rem;
+  }
+  .tpl-fields {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+  .tpl-fields .field {
+    margin-bottom: 0.6rem;
+  }
+  .tpl-fields label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .tpl-box {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+    margin: 1.25rem 0 2.5rem;
+  }
+  .tpl-bar {
+    padding: 0.45rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-alt);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .tpl-box pre {
+    margin: 0;
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+</style>

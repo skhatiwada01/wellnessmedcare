@@ -1,0 +1,89 @@
+---
+import Base from '../../layouts/Base.astro';
+import Support from '../../components/Support.astro';
+import { getCollection } from 'astro:content';
+import { PILLARS } from '../../content.config';
+import { GLOSSARY } from '../../data/glossary';
+import { TEMPLATES } from '../../data/templates';
+
+const guides = await getCollection('guides', ({ data }) => !data.draft);
+const byPillar = Object.keys(PILLARS).map((key) => ({
+  key,
+  ...PILLARS[key as keyof typeof PILLARS],
+  items: guides
+    .filter((g) => g.data.pillar === key)
+    .sort((a, b) => a.data.order - b.data.order),
+}));
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+---
+
+<Base
+  title="Guides"
+  description="Plain-English guides to US health insurance, medical billing, appeals, and healthcare prices, plus fill-in letter templates and a glossary of billing terms."
+>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose">
+      <h1>Guides</h1>
+      <p class="lede">
+        How billing, insurance, appeals and pricing actually work. This is the paperwork
+        side of healthcare - not your diagnosis. Each guide cites its primary sources and
+        carries the date it was last checked.
+      </p>
+    </div>
+
+    <div class="hub-grid">
+      <a class="hub-card" href="/templates/">
+        <p class="eyebrow">Fill in and download</p>
+        <h3>Letter templates</h3>
+        <p>
+          {TEMPLATES.length} letters for hospitals, insurers and collectors. Fill in the
+          blanks and download a finished Word document.
+        </p>
+      </a>
+      <a class="hub-card" href="/glossary/">
+        <p class="eyebrow">Look it up</p>
+        <h3>Glossary</h3>
+        <p>
+          {GLOSSARY.length} insurance and billing terms defined without jargon, from
+          allowed amount to utilization review.
+        </p>
+      </a>
+      <a class="hub-card" href="/tools/appeal-deadline/">
+        <p class="eyebrow">Calculator</p>
+        <h3>Appeal deadline</h3>
+        <p>
+          Enter the date on your denial letter and see when your internal appeal window
+          closes.
+        </p>
+      </a>
+    </div>
+
+    {
+      byPillar.map(
+        (pillar) =>
+          pillar.items.length > 0 && (
+            <section class="section" id={pillar.key}>
+              <h2>{pillar.label}</h2>
+              <p style="color:var(--text-muted);max-width:60ch">{pillar.blurb}</p>
+              <div class="grid" style="margin-top:1.25rem">
+                {pillar.items.map((g) => (
+                  <article class="card">
+                    <h3>
+                      <a href={`/guides/${g.id}/`}>{g.data.title}</a>
+                    </h3>
+                    <p>{g.data.description}</p>
+                    <p class="meta">Updated {fmt(g.data.updated)}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ),
+      )
+    }
+
+    <div class="prose" style="margin-top:3rem">
+      <Support />
+    </div>
+  </div>
+</Base>

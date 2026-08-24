@@ -1,0 +1,111 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="Pack-Year Calculator"
+  description="Work out your smoking pack-years - packs per day times years smoked. Clinicians use this number to decide screening eligibility, and knowing yours speeds that conversation up."
+  h1="Pack-year calculator"
+  lede="A pack-year is one pack a day for one year. It is the standard way clinicians quantify smoking history, and it decides eligibility for some screening programs - so knowing your number is genuinely useful."
+>
+  <form class="tool" id="py-form" autocomplete="off" slot="tool">
+    <div class="field-row">
+      <div class="field">
+        <label for="per-day">Cigarettes per day (average)</label>
+        <input id="per-day" type="number" inputmode="decimal" min="1" max="100" step="1" placeholder="15" />
+        <span class="hint">A US pack is 20 cigarettes. Estimate an average across the years.</span>
+      </div>
+      <div class="field">
+        <label for="years">Years smoked</label>
+        <input id="years" type="number" inputmode="decimal" min="0.5" max="80" step="0.5" placeholder="12" />
+        <span class="hint">Total years, minus any long breaks.</span>
+      </div>
+    </div>
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Calculate</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Your smoking history
+      </p>
+      <p class="big" id="py-value">-</p>
+      <p style="margin:.4rem 0 0" id="py-note"></p>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Calculated in your browser. Nothing is sent or stored.
+    </p>
+  </form>
+
+  <h2>Why this number exists</h2>
+  <p>
+    "How much did you smoke?" is a hard question to answer usefully - amounts change over
+    decades. Pack-years compress the whole history into one comparable number: cigarettes
+    per day, divided by 20, multiplied by years smoked. Ten cigarettes a day for twenty
+    years and a pack a day for ten years are both 10 pack-years.
+  </p>
+
+  <h2>What it is used for</h2>
+  <p>
+    The US Preventive Services Task Force recommendation on lung cancer screening uses
+    pack-years as an eligibility criterion, alongside age and how recently someone
+    smoked. Whether screening is appropriate for you is exactly the kind of individual
+    decision this site does not make - but walking into the appointment already knowing
+    your pack-years turns a vague conversation into a specific one.
+  </p>
+  <p>Questions worth taking with the number:</p>
+  <ul>
+    <li>Given my pack-years and my age, do I meet the current criteria for lung cancer screening?</li>
+    <li>Is the screening covered by my plan as a preventive service?</li>
+    <li>If I quit years ago, does that change whether screening applies to me?</li>
+  </ul>
+  <p>
+    Preventive services are frequently covered without cost sharing at in-network
+    providers - our guide on
+    <a href="/guides/deductible-copay-coinsurance/">how cost sharing works</a> explains
+    the mechanics, and it is always worth confirming coverage
+    <a href="/guides/in-network-vs-out-of-network/">before booking</a>.
+  </p>
+
+  <Callout tone="warn" title="An estimate, openly">
+    <p style="margin:0">
+      Nobody remembers their smoking history precisely, and clinicians know that. Give
+      your best average and say it is an estimate. If you are near a screening threshold,
+      the honest range matters more than false precision - say the range.
+    </p>
+  </Callout>
+
+  <h2>Where this comes from</h2>
+  <p>
+    The USPSTF lung cancer screening recommendation:
+    <a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening" rel="noopener nofollow" target="_blank">uspreventiveservicestaskforce.org</a>.
+  </p>
+</Tool>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+
+  document.getElementById('calc')!.addEventListener('click', () => {
+    const result = document.getElementById('result')!;
+    const perDay = parseFloat($('per-day').value);
+    const years = parseFloat($('years').value);
+    if (!isFinite(perDay) || !isFinite(years) || perDay <= 0 || years <= 0) {
+      result.hidden = true;
+      return;
+    }
+    const py = (perDay / 20) * years;
+    (document.getElementById('py-value') as HTMLElement).textContent =
+      `${py.toFixed(1)} pack-years`;
+    (document.getElementById('py-note') as HTMLElement).textContent =
+      `${perDay} cigarettes a day is ${(perDay / 20).toFixed(2)} packs; times ${years} years. Bring this number to your next appointment and ask whether any screening criteria apply to you.`;
+    result.hidden = false;
+  });
+
+  (document.getElementById('py-form') as HTMLFormElement).addEventListener('reset', () =>
+    setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
+  );
+</script>

@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import Callout from '../../components/Callout.astro';
+import Support from '../../components/Support.astro';
+import { getCollection } from 'astro:content';
+import { TOPICS } from '../../content.config';
+
+const tips = await getCollection('tips', ({ data }) => !data.draft);
+const grouped = Object.keys(TOPICS).map((key) => ({
+  key,
+  ...TOPICS[key as keyof typeof TOPICS],
+  items: tips
+    .filter((t) => t.data.topic === key)
+    .sort((a, b) => a.data.order - b.data.order),
+}));
+---
+<Base
+  title="Tips"
+  description="Practical preparation tips for getting more out of a doctor's appointment, understanding a test, starting to move more, or helping a parent manage their care."
+>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose">
+      <h1>Tips</h1>
+      <p class="lede">
+        Short, practical pages about the part of healthcare you actually control:
+        turning up prepared, asking the right question, and knowing what happens next.
+      </p>
+
+      <Callout tone="warn" title="Preparation, not prescription">
+        <p style="margin:0">
+          These pages help you have a better conversation with a clinician. They do not
+          replace one. We will never tell you what exercise to do, what to eat, or what
+          treatment to seek - we will help you walk in with the right questions and walk
+          out with a plan you understand.
+        </p>
+      </Callout>
+    </div>
+
+    {grouped.map((g) => g.items.length > 0 && (
+      <section class="section" id={g.key}>
+        <h2>{g.label}</h2>
+        <p style="color:var(--text-muted);max-width:62ch">{g.blurb}</p>
+        <div class="grid" style="margin-top:1.25rem">
+          {g.items.map((t) => (
+            <article class="card">
+              <h3><a href={`/tips/${t.id}/`}>{t.data.title}</a></h3>
+              <p>{t.data.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <div class="prose" style="margin-top:3rem">
+      <Support />
+    </div>
+  </div>
+</Base>

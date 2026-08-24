@@ -1,0 +1,18 @@
+---
+interface Props {
+  /** Shown after a guide or a tool result - the moments where this actually converts. */
+  context?: 'guide' | 'tool';
+}
+const { context = 'guide' } = Astro.props;
+const line =
+  context === 'tool'
+    ? 'If this saved you money, you can buy us a coffee. It keeps the tools free and ad-light for everyone else.'
+    : 'This site is free, has no paywall, and takes no money from hospitals, insurers, or billing companies. If it helped, a coffee keeps it going.';
+---
+<section class="support" aria-labelledby="support-heading">
+  <h2 id="support-heading" class="eyebrow">Support this site</h2>
+  <p>{line}</p>
+  <a class="btn" href="https://buymeacoffee.com/sisra" rel="noopener nofollow" target="_blank">
+    Buy us a coffee
+  </a>
+</section>

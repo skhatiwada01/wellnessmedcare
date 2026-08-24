@@ -1,0 +1,30 @@
+---
+import Base from './Base.astro';
+import Support from '../components/Support.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  h1: string;
+  lede: string;
+  jsonLd?: Record<string, unknown>[];
+}
+const { title, description, h1, lede, jsonLd } = Astro.props;
+---
+
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose" style="max-width:none">
+      <h1>{h1}</h1>
+      <p class="lede" style="max-width:60ch">{lede}</p>
+    </div>
+
+    <div class="tool-layout">
+      <slot name="tool" />
+      <div class="tool-side prose">
+        <slot />
+        <Support context="tool" />
+      </div>
+    </div>
+  </div>
+</Base>

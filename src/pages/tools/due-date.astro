@@ -1,0 +1,125 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="Due Date and Gestational Age Calculator"
+  description="Estimate a due date from the last menstrual period using the standard 280-day method, and see the current gestational age in weeks and days."
+  h1="Due date calculator"
+  lede="The standard estimate: 280 days from the first day of the last menstrual period. This page does the arithmetic and tells you how much weight the result can actually bear."
+>
+  <form class="tool" id="due-form" autocomplete="off" slot="tool">
+    <div class="field">
+      <label for="lmp">First day of last menstrual period</label>
+      <input id="lmp" type="date" />
+    </div>
+    <div class="field">
+      <label for="cycle">Average cycle length (days)</label>
+      <input id="cycle" type="number" inputmode="numeric" min="20" max="45" step="1" value="28" />
+      <span class="hint">
+        The 280-day rule assumes 28. A different average shifts the estimate day for day.
+      </span>
+    </div>
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Calculate</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Estimated due date
+      </p>
+      <p class="big" id="due-value">-</p>
+      <p style="margin:.5rem 0 0" id="ga-line"></p>
+      <p style="margin:.4rem 0 0;font-size:.9rem;color:var(--text-muted)" id="trimester-line"></p>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Calculated in your browser. Your dates are never sent or stored.
+    </p>
+  </form>
+
+  <h2>What this estimate is</h2>
+  <p>
+    The calculation is Naegele's rule: 280 days (40 weeks) from the first day of the last
+    menstrual period, adjusted for your average cycle length. It is the same first-pass
+    arithmetic printed in obstetric textbooks, and it is what most period apps use.
+  </p>
+  <p>Its limits are well known and worth stating plainly:</p>
+  <ul>
+    <li>It assumes you know the date of your last period with confidence</li>
+    <li>It assumes ovulation at a predictable point in your cycle, which varies</li>
+    <li>An early ultrasound is more accurate, and when the two disagree meaningfully, clinicians generally go with the ultrasound - the due date in your chart may legitimately differ from this arithmetic</li>
+    <li>A due date is the middle of a distribution, not an appointment - a minority of babies arrive on it</li>
+  </ul>
+
+  <Callout tone="warn" title="The date in your chart wins">
+    <p style="margin:0">
+      Once a clinician has dated the pregnancy - usually with a first-trimester ultrasound
+      - that date supersedes this estimate for every decision that follows. Use this page
+      for planning and curiosity, and use your prenatal appointments for everything that
+      matters. If you have not had a first appointment yet, booking one is the actual
+      next step.
+    </p>
+  </Callout>
+
+  <h2>Questions for the first prenatal visit</h2>
+  <ul>
+    <li>How will you date the pregnancy, and when would an ultrasound adjust it?</li>
+    <li>What does my insurance cover for prenatal care, and is the hospital I would deliver at <a href="/guides/in-network-vs-out-of-network/">in-network for my plan</a>?</li>
+    <li>Which of my current medications and supplements should we review?</li>
+    <li>How does this practice handle questions between visits?</li>
+  </ul>
+  <p>
+    The delivery-cost question deserves asking early, not at 38 weeks - our guide on
+    <a href="/guides/what-things-actually-cost/">finding what things cost</a> covers how
+    to get real numbers out of a hospital, and a
+    <a href="/tools/trackers/">pregnancy appointment log</a> keeps the visits organized.
+  </p>
+</Tool>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const fmt = (d: Date) =>
+    d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  document.getElementById('calc')!.addEventListener('click', () => {
+    const result = document.getElementById('result')!;
+    if (!$('lmp').value) {
+      result.hidden = true;
+      return;
+    }
+    const [y, m, d] = $('lmp').value.split('-').map(Number);
+    const lmp = new Date(y, m - 1, d);
+    const cycle = parseInt($('cycle').value, 10) || 28;
+
+    const due = new Date(lmp);
+    due.setDate(due.getDate() + 280 + (cycle - 28));
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const daysIn = Math.floor((today.getTime() - lmp.getTime()) / 86400000);
+
+    (document.getElementById('due-value') as HTMLElement).textContent = fmt(due);
+
+    const gaLine = document.getElementById('ga-line') as HTMLElement;
+    const triLine = document.getElementById('trimester-line') as HTMLElement;
+    if (daysIn >= 0 && daysIn <= 310) {
+      const weeks = Math.floor(daysIn / 7);
+      const days = daysIn % 7;
+      gaLine.textContent = `Estimated gestational age today: ${weeks} weeks, ${days} day${days === 1 ? '' : 's'}.`;
+      const tri = weeks < 13 ? 'first' : weeks < 28 ? 'second' : 'third';
+      triLine.textContent = `By the common convention, that is in the ${tri} trimester.`;
+    } else {
+      gaLine.textContent = '';
+      triLine.textContent = '';
+    }
+    result.hidden = false;
+  });
+
+  (document.getElementById('due-form') as HTMLFormElement).addEventListener('reset', () =>
+    setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
+  );
+</script>

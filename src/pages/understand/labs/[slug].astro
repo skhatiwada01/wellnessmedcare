@@ -1,0 +1,174 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Callout from '../../../components/Callout.astro';
+import Support from '../../../components/Support.astro';
+import { LAB_TESTS, PANELS } from '../../../data/labs';
+
+export function getStaticPaths() {
+  return LAB_TESTS.map((test) => ({ params: { slug: test.slug }, props: { test } }));
+}
+
+const { test } = Astro.props;
+const panel = PANELS[test.panel];
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: `What does the ${test.name} test measure?`,
+      acceptedAnswer: { '@type': 'Answer', text: test.measures },
+    },
+    {
+      '@type': 'Question',
+      name: `Why would a doctor order a ${test.name} test?`,
+      acceptedAnswer: { '@type': 'Answer', text: test.whyOrdered },
+    },
+    {
+      '@type': 'Question',
+      name: `What is associated with a higher ${test.name} result?`,
+      acceptedAnswer: { '@type': 'Answer', text: test.higher },
+    },
+    {
+      '@type': 'Question',
+      name: `What is associated with a lower ${test.name} result?`,
+      acceptedAnswer: { '@type': 'Answer', text: test.lower },
+    },
+  ],
+};
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Understand Your Health', item: new URL('/understand/', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: panel.label, item: new URL(`/understand/#${test.panel}`, Astro.site).href },
+    { '@type': 'ListItem', position: 3, name: test.name, item: pageUrl },
+  ],
+};
+
+const aka = test.aka?.length ? ` (${test.aka.join(', ')})` : '';
+const isVital = test.panel === 'vitals';
+
+const related = LAB_TESTS.filter((t) => t.panel === test.panel && t.slug !== test.slug).slice(0, 6);
+
+const TOC = [
+  { id: 'measures', label: 'What it measures' },
+  { id: 'why-ordered', label: isVital ? 'Why it is checked' : 'Why a doctor orders it' },
+  { id: 'higher', label: 'Higher results' },
+  { id: 'lower', label: 'Lower results' },
+  { id: 'everyday', label: 'Everyday factors' },
+  { id: 'questions', label: 'Questions to ask' },
+];
+---
+
+<Base
+  title={`${test.name}${aka} - What This Test Measures`}
+  description={`${test.short} What the ${test.name} test measures, why it is ordered, what moves it up or down, and what to ask your doctor.`}
+  jsonLd={[faqLd, breadcrumbLd]}
+>
+  <article class="wrap" style="padding-top:2.5rem">
+    <div class="article-layout">
+      <div class="prose">
+        <p class="eyebrow">
+          <a href={`/understand/#${test.panel}`} style="text-decoration:none">{panel.label}</a>
+        </p>
+        <h1>{test.name}</h1>
+        {test.aka && <p style="color:var(--text-muted);margin-top:-.25rem">Also written as: {test.aka.join(', ')}</p>}
+        <p class="lede">{test.short}</p>
+
+        {isVital ? (
+          <Callout tone="warn" title="A number is a snapshot, not a verdict">
+            <p style="margin:0">
+              We do not publish target values. What a reading means depends on how it was
+              taken, how it trends over many readings, and everything your clinician knows
+              about you. A single number, taken once, supports almost no conclusion on its
+              own.
+            </p>
+          </Callout>
+        ) : (
+          <Callout tone="warn" title="Check your result against your own report, not this page">
+            <p style="margin:0">
+              We do not publish reference ranges. The range that applies to your sample is
+              printed on your own lab report, and it varies by laboratory, testing method,
+              age, and sex. Only your clinician can tell you what your result means for you.
+            </p>
+          </Callout>
+        )}
+
+        <h2 id="measures">What it measures</h2>
+        <p>{test.measures}</p>
+
+        <h2 id="why-ordered">{isVital ? 'Why it is checked' : 'Why a doctor orders it'}</h2>
+        <p>{test.whyOrdered}</p>
+
+        <h2 id="higher">What is generally associated with a higher result</h2>
+        <p>{test.higher}</p>
+
+        <h2 id="lower">What is generally associated with a lower result</h2>
+        <p>{test.lower}</p>
+
+        <h2 id="everyday">Everyday things that move this number</h2>
+        <p>
+          Not every shift in a value reflects disease. These are ordinary factors known
+          to affect this particular measurement:
+        </p>
+        <ul>
+          {test.affectedBy.map((a) => <li>{a}</li>)}
+        </ul>
+
+        <h2 id="questions">Questions to take to your appointment</h2>
+        <ul>
+          {test.ask.map((q) => <li>{q}</li>)}
+        </ul>
+        <p>
+          <a href="/understand/my-lab-results/">
+            Build a printable questionnaire with your own results &rarr;
+          </a>
+        </p>
+
+        <h2 id="read-more">Where to read more</h2>
+        <p>
+          MedlinePlus, from the US National Library of Medicine, publishes patient-facing
+          pages on individual lab tests and is a reliable next stop:
+          <a href="https://medlineplus.gov/lab-tests/" rel="noopener nofollow" target="_blank">
+            medlineplus.gov/lab-tests
+          </a>.
+        </p>
+
+        <Support />
+      </div>
+
+      <aside class="article-rail" aria-label="Page navigation">
+        <nav class="toc">
+          <h2>On this page</h2>
+          <ul>
+            {TOC.map((t) => <li><a href={`#${t.id}`}>{t.label}</a></li>)}
+          </ul>
+        </nav>
+        {
+          related.length > 0 && (
+            <nav>
+              <h2>Same panel</h2>
+              <ul>
+                {related.map((t) => (
+                  <li>
+                    <a href={`/understand/labs/${t.slug}/`}>{t.name}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )
+        }
+        <nav>
+          <h2>Take it with you</h2>
+          <ul>
+            <li><a href="/understand/my-lab-results/">Questionnaire builder</a></li>
+            <li><a href="/tools/trackers/">Printable trackers</a></li>
+          </ul>
+        </nav>
+      </aside>
+    </div>
+  </article>
+</Base>

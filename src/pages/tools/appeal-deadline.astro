@@ -1,0 +1,124 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="Appeal Deadline Calculator"
+  description="Enter the date on your insurance denial letter and see when your internal appeal window closes, plus the external review deadline that follows."
+  h1="Appeal deadline calculator"
+  lede="Federal rules give you at least 180 days from the date of a denial notice to file an internal appeal. Miss it and your strongest argument may never be heard."
+>
+  <form class="tool" id="deadline-form" autocomplete="off" slot="tool">
+    <div class="field">
+      <label for="denial-date">Date on your denial notice</label>
+      <input id="denial-date" type="date" />
+      <span class="hint">Use the date printed on the letter, not the date you opened it.</span>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Internal appeal deadline
+      </p>
+      <p class="big" id="internal-date">-</p>
+      <p style="margin:.5rem 0 0" id="days-left"></p>
+      <hr style="border:0;border-top:1px solid var(--border);margin:1rem 0" />
+      <p style="margin:0;font-size:.93rem">
+        <strong>If your internal appeal is denied:</strong> you generally have about 4
+        months from that final internal denial to request an external review. That clock
+        starts from the second letter, not this one.
+      </p>
+    </div>
+  </form>
+
+  <Callout tone="warn" title="Check your own letter">
+    <p style="margin:0">
+      180 days is the federal floor for plans subject to these rules, and your plan may
+      allow longer. Some plans - including certain government and church plans - follow
+      different timetables entirely. Your denial notice is required to state your appeal
+      rights and deadlines, and if the two disagree, the letter wins. When in doubt, file
+      early.
+    </p>
+  </Callout>
+
+  <h2>What to do with the time</h2>
+  <ol class="steps">
+    <li>
+      <strong>Call and ask what specifically caused the denial.</strong> A large share
+      turn out to be clerical or coding problems that the provider's billing office can
+      fix without any appeal at all.
+    </li>
+    <li>
+      <strong>Ask the plan in writing for the criteria they used</strong>, including any
+      internal rule or clinical guideline. You are entitled to a free copy, and it turns
+      the appeal from an argument into a checklist.
+    </li>
+    <li>
+      <strong>Get a letter from your clinician tied to those criteria</strong>, not a
+      general statement that the care was needed.
+    </li>
+    <li>
+      <strong>File something before the deadline even if documents are still missing.</strong>
+      You can supplement afterward. You cannot un-miss a deadline.
+    </li>
+  </ol>
+
+  <p>
+    The full process, including what actually persuades a reviewer, is in our guide on
+    <a href="/guides/appeal-a-denied-claim/">what to do when your claim is denied</a>,
+    and there is a <a href="/templates/#internal-appeal">fill-in appeal letter</a> ready
+    to send.
+  </p>
+</Tool>
+
+<script>
+  const input = document.getElementById('denial-date') as HTMLInputElement;
+  const result = document.getElementById('result') as HTMLElement;
+  const internal = document.getElementById('internal-date') as HTMLElement;
+  const daysLeft = document.getElementById('days-left') as HTMLElement;
+
+  const fmt = (d: Date) =>
+    d.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+  function calculate() {
+    if (!input.value) {
+      result.hidden = true;
+      return;
+    }
+    // Parse as local midnight so the date does not shift by timezone.
+    const [y, m, d] = input.value.split('-').map(Number);
+    const denial = new Date(y, m - 1, d);
+    if (isNaN(denial.getTime())) {
+      result.hidden = true;
+      return;
+    }
+
+    const deadline = new Date(denial);
+    deadline.setDate(deadline.getDate() + 180);
+    internal.textContent = fmt(deadline);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const remaining = Math.round((deadline.getTime() - today.getTime()) / 86400000);
+
+    if (remaining > 30) {
+      daysLeft.textContent = `${remaining} days left. There is time to gather documents, but start now.`;
+    } else if (remaining > 0) {
+      daysLeft.textContent = `Only ${remaining} days left. File something now and supplement it afterward.`;
+    } else if (remaining === 0) {
+      daysLeft.textContent = 'The deadline is today. File today, even if incomplete.';
+    } else {
+      daysLeft.textContent = `This window closed about ${Math.abs(remaining)} days ago. Call your plan anyway - some allow longer, and a late appeal is better than none.`;
+    }
+
+    result.hidden = false;
+  }
+
+  input.addEventListener('input', calculate);
+  input.addEventListener('change', calculate);
+</script>

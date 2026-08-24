@@ -1,0 +1,91 @@
+---
+import { PUBLISHED_LOCALES, LOCALES, localePath, parsePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+const { locale, rest } = parsePath(Astro.url.pathname);
+const t = useTranslations(locale);
+
+const links = [
+  { href: '/guides/', label: t('nav.guides') },
+  { href: '/tools/', label: t('nav.tools') },
+  { href: '/understand/', label: t('nav.understand') },
+  { href: '/tips/', label: t('nav.tips') },
+  { href: '/about/', label: t('nav.about') },
+];
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(localePath(href, locale));
+
+// Hide the switcher until a second locale is actually published.
+const showLangSwitcher = PUBLISHED_LOCALES.length > 1;
+---
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href={localePath('/', locale)}>
+      <span class="mark" aria-hidden="true">W</span>
+      Wellness Med Care
+    </a>
+
+    <nav class="site-nav" aria-label={t('nav.main')}>
+      {
+        links.map((l) => (
+          <a href={localePath(l.href, locale)} aria-current={isCurrent(l.href) ? 'page' : undefined}>
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="header-controls">
+      {
+        showLangSwitcher && (
+          <>
+            <label class="skip" for="lang-select">
+              {t('lang.label')}
+            </label>
+            <select class="lang-select" id="lang-select" data-rest={rest}>
+              {PUBLISHED_LOCALES.map((code) => (
+                <option value={code} selected={code === locale}>
+                  {LOCALES[code].native}
+                </option>
+              ))}
+            </select>
+          </>
+        )
+      }
+
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label={t('action.theme')}>
+        <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+        </svg>
+        <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  toggle?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* private browsing - the choice just will not persist */
+    }
+  });
+
+  const langSelect = document.getElementById('lang-select') as HTMLSelectElement | null;
+  langSelect?.addEventListener('change', () => {
+    const rest = langSelect.dataset.rest || '/';
+    const code = langSelect.value;
+    window.location.pathname = code === 'en' ? rest : `/${code}${rest}`;
+  });
+</script>

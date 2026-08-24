@@ -1,0 +1,34 @@
+---
+/**
+ * Set this to your form provider's POST endpoint (Buttondown, ConvertKit, Formspree,
+ * MailerLite, etc). While it is empty the component renders nothing, so we never
+ * ship a form that silently drops addresses.
+ */
+const NEWSLETTER_ENDPOINT = '';
+---
+{NEWSLETTER_ENDPOINT && (
+  <section class="support" aria-labelledby="newsletter-heading">
+    <h2 id="newsletter-heading" class="eyebrow">Get the Bill Dispute Kit</h2>
+    <p>
+      A free set of letter templates for requesting an itemized bill, appealing a denial,
+      and applying for hospital financial assistance. One email, no spam, unsubscribe anytime.
+    </p>
+    <form action={NEWSLETTER_ENDPOINT} method="post" style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <label for="nl-email" class="skip">Email address</label>
+      <input
+        id="nl-email"
+        type="email"
+        name="email"
+        required
+        autocomplete="email"
+        placeholder="you@example.com"
+        style="flex:1 1 16rem;padding:.55rem .75rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:inherit"
+      />
+      <button class="btn" type="submit">Send it to me</button>
+    </form>
+    <p style="margin:.75rem 0 0;font-size:.82rem">
+      We store your address only to send this newsletter. See our
+      <a href="/privacy/">Privacy Policy</a>.
+    </p>
+  </section>
+)}

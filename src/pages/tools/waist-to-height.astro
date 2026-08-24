@@ -1,0 +1,130 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="Waist-to-Height Ratio Calculator"
+  description="Divide your waist measurement by your height and see the published guidance on the ratio. Some health bodies now prefer it to BMI as a first screen."
+  h1="Waist-to-height ratio"
+  lede="Waist circumference divided by height. It captures something BMI misses - where weight sits - and the guidance built on it fits in one sentence."
+>
+  <form class="tool" id="whtr-form" autocomplete="off" slot="tool">
+    <div class="field">
+      <label for="units">Units</label>
+      <select id="units">
+        <option value="metric">Metric (cm)</option>
+        <option value="imperial">Imperial (inches)</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="waist">Waist</label>
+        <input id="waist" type="number" inputmode="decimal" min="10" step="0.1" placeholder="86" />
+        <span class="hint" id="waist-hint">In cm, measured midway between your lowest rib and the top of your hip bone.</span>
+      </div>
+      <div class="field">
+        <label for="height">Height</label>
+        <input id="height" type="number" inputmode="decimal" min="50" step="0.1" placeholder="170" />
+        <span class="hint" id="height-hint">In cm.</span>
+      </div>
+    </div>
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Calculate</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Your ratio
+      </p>
+      <p class="big" id="ratio-value">-</p>
+      <p style="margin:.4rem 0 0" id="ratio-note"></p>
+      <p style="margin:.6rem 0 0;font-size:.88rem;color:var(--text-muted)">
+        This restates published population guidance, not an assessment of your health.
+      </p>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Calculated in your browser. Your measurements are never sent or stored.
+    </p>
+  </form>
+
+  <h2>What the guidance says</h2>
+  <p>
+    The UK's National Institute for Health and Care Excellence (NICE), among others,
+    recommends adults keep their waist measurement to less than half their height - a
+    ratio below 0.5 - because fat carried around the middle is the kind most associated
+    with metabolic risk at a population level. NICE describes 0.5 and above as increased
+    central adiposity, and 0.6 and above as further increased.
+  </p>
+  <p>
+    The appeal of the ratio is that it needs no charts, no adjustment for sex, and only a
+    tape measure. Its weakness is the same as any single number: it is a population
+    screen, not an individual assessment.
+  </p>
+
+  <h2>Measuring your waist properly</h2>
+  <ul>
+    <li>Measure midway between the bottom of your lowest rib and the top of your hip bone - roughly level with your navel for most people, but the bones are the landmarks, not the navel</li>
+    <li>Directly against skin or one thin layer, tape snug but not compressing</li>
+    <li>Breathe out normally, then read the tape</li>
+    <li>Not where your belt sits - belts ride below the waist on many people, which is exactly the flattering error you do not want in a measurement</li>
+  </ul>
+
+  <Callout tone="warn" title="Same rule as BMI">
+    <p style="margin:0">
+      A ratio at or above the published threshold is a reason to have a conversation, not
+      a diagnosis of anything. What it means for you depends on your history, your labs,
+      and an examination. Our guide on
+      <a href="/tips/talking-about-weight/">preparing for that conversation</a> covers how
+      to get something specific out of it, and the
+      <a href="/tools/bmi/">BMI page</a> covers the other screening number and its blind
+      spots.
+    </p>
+  </Callout>
+
+  <h2>Where this comes from</h2>
+  <p>
+    NICE guideline on obesity identification and classification:
+    <a href="https://www.nice.org.uk/guidance/cg189" rel="noopener nofollow" target="_blank">nice.org.uk/guidance/cg189</a>
+    (updated guidance uses waist-to-height ratio alongside BMI).
+  </p>
+</Tool>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+
+  const units = document.getElementById('units') as HTMLSelectElement;
+  units.addEventListener('change', () => {
+    const metric = units.value === 'metric';
+    document.getElementById('waist-hint')!.textContent = metric
+      ? 'In cm, measured midway between your lowest rib and the top of your hip bone.'
+      : 'In inches, measured midway between your lowest rib and the top of your hip bone.';
+    document.getElementById('height-hint')!.textContent = metric ? 'In cm.' : 'In inches.';
+    (document.getElementById('result') as HTMLElement).hidden = true;
+  });
+
+  document.getElementById('calc')!.addEventListener('click', () => {
+    const result = document.getElementById('result')!;
+    const waist = parseFloat($('waist').value);
+    const height = parseFloat($('height').value);
+    if (!isFinite(waist) || !isFinite(height) || waist <= 0 || height <= 0 || waist >= height * 1.5) {
+      result.hidden = true;
+      return;
+    }
+    const ratio = waist / height;
+    (document.getElementById('ratio-value') as HTMLElement).textContent = ratio.toFixed(2);
+    let note: string;
+    if (ratio < 0.5) note = 'Below 0.5 - within the "keep your waist to less than half your height" guidance NICE publishes.';
+    else if (ratio < 0.6) note = 'NICE describes 0.5 to 0.59 as increased central adiposity in its published guidance.';
+    else note = 'NICE describes 0.6 and above as further increased central adiposity in its published guidance.';
+    (document.getElementById('ratio-note') as HTMLElement).textContent = note;
+    result.hidden = false;
+  });
+
+  (document.getElementById('whtr-form') as HTMLFormElement).addEventListener('reset', () =>
+    setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
+  );
+</script>

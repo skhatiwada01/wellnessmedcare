@@ -1,0 +1,266 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="Medical Unit Converter"
+  description="Convert 20 lab measurements between US and international units: blood sugar, cholesterol, creatinine, A1C, vitamins, hormones, bilirubin, and more."
+  h1="Medical unit converter"
+  lede="US labs report in different units from most of the rest of the world. If your result is in mg/dL and the article you are reading is in mmol/L, this converts between them."
+>
+  <form class="tool" id="conv-form" autocomplete="off" slot="tool">
+    <div class="field">
+      <label for="measure">What are you converting?</label>
+      <select id="measure">
+        <optgroup label="Blood sugar">
+          <option value="glucose">Glucose (blood sugar)</option>
+          <option value="a1c">A1C to average glucose</option>
+        </optgroup>
+        <optgroup label="Lipids">
+          <option value="cholesterol">Cholesterol (total, LDL, HDL)</option>
+          <option value="triglycerides">Triglycerides</option>
+        </optgroup>
+        <optgroup label="Kidney and liver">
+          <option value="creatinine">Creatinine</option>
+          <option value="bun">BUN / urea</option>
+          <option value="uric-acid">Uric acid</option>
+          <option value="bilirubin">Bilirubin</option>
+          <option value="albumin">Albumin</option>
+        </optgroup>
+        <optgroup label="Vitamins, minerals, iron">
+          <option value="vitamin-d">Vitamin D (25-OH)</option>
+          <option value="b12">Vitamin B12</option>
+          <option value="folate">Folate</option>
+          <option value="calcium">Calcium</option>
+          <option value="magnesium">Magnesium</option>
+          <option value="iron">Serum iron</option>
+        </optgroup>
+        <optgroup label="Hormones">
+          <option value="testosterone">Testosterone</option>
+          <option value="estradiol">Estradiol</option>
+          <option value="cortisol">Cortisol</option>
+        </optgroup>
+        <optgroup label="Blood and inflammation">
+          <option value="hemoglobin">Hemoglobin</option>
+          <option value="crp">CRP</option>
+        </optgroup>
+        <optgroup label="Everyday units">
+          <option value="weight">Weight</option>
+          <option value="height">Height</option>
+          <option value="temperature">Temperature</option>
+          <option value="volume">Liquid volume</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="input-value">Value</label>
+        <input id="input-value" type="number" inputmode="decimal" step="any" placeholder="Enter a number" />
+      </div>
+      <div class="field">
+        <label for="direction">Direction</label>
+        <select id="direction"></select>
+      </div>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Result
+      </p>
+      <p class="big" id="out-value">-</p>
+      <p style="margin:.4rem 0 0;font-size:.9rem;color:var(--text-muted)" id="formula"></p>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Arithmetic only, done in your browser. Nothing is sent or stored, and no result is
+      judged against any range.
+    </p>
+  </form>
+
+  <h2>Notes on specific conversions</h2>
+
+  <h3>A1C and average glucose</h3>
+  <p>
+    Estimated average glucose (eAG) translates an A1C percentage into the average blood
+    sugar it corresponds to, using the formula from the A1C-Derived Average Glucose study
+    that the American Diabetes Association uses. It is an average across roughly three
+    months, not a prediction of any individual reading - two people with the same A1C can
+    have very different day-to-day swings. Our page on
+    <a href="/understand/labs/a1c/">what A1C measures</a> covers the caveats.
+  </p>
+
+  <h3>Same number, different label</h3>
+  <p>
+    Two common values need no conversion at all: TSH in uIU/mL and mIU/L are the same
+    number, and ferritin in ng/mL and ug/L are the same number. If a result looks wildly
+    different from something you read, check the units before anything else - a glucose
+    of 5.5 and a glucose of 99 can be the same result.
+  </p>
+
+  <h3>Where the factors come from</h3>
+  <p>
+    Each conversion multiplies by the ratio of molecular weight to unit scale - fixed
+    constants used identically by every laboratory. The formula used is shown under every
+    result so you can check the arithmetic yourself.
+  </p>
+
+  <Callout tone="warn" title="Converting is not interpreting">
+    <p style="margin:0">
+      This tool changes the units of a number, nothing more. Whether the number is
+      expected or unexpected for you depends on the reference range printed on your own
+      report and on your clinician's knowledge of you. Our
+      <a href="/understand/">lab test reference</a> explains what each test measures.
+    </p>
+  </Callout>
+</Tool>
+
+<script>
+  interface Conversion {
+    label: string;
+    convert: (v: number) => number;
+    unit: string;
+    formula: string;
+    decimals: number;
+  }
+
+  const CONVERSIONS: Record<string, Conversion[]> = {
+    glucose: [
+      { label: 'mg/dL to mmol/L', convert: (v) => v / 18.016, unit: 'mmol/L', formula: 'value divided by 18.016', decimals: 1 },
+      { label: 'mmol/L to mg/dL', convert: (v) => v * 18.016, unit: 'mg/dL', formula: 'value multiplied by 18.016', decimals: 0 },
+    ],
+    a1c: [
+      { label: 'A1C % to average glucose (mg/dL)', convert: (v) => 28.7 * v - 46.7, unit: 'mg/dL', formula: '(28.7 x A1C) - 46.7', decimals: 0 },
+      { label: 'A1C % to average glucose (mmol/L)', convert: (v) => 1.5944 * v - 2.5944, unit: 'mmol/L', formula: '(1.5944 x A1C) - 2.5944', decimals: 1 },
+      { label: 'Average glucose (mg/dL) to A1C %', convert: (v) => (v + 46.7) / 28.7, unit: '%', formula: '(value + 46.7) divided by 28.7', decimals: 1 },
+    ],
+    cholesterol: [
+      { label: 'mg/dL to mmol/L', convert: (v) => v / 38.67, unit: 'mmol/L', formula: 'value divided by 38.67', decimals: 2 },
+      { label: 'mmol/L to mg/dL', convert: (v) => v * 38.67, unit: 'mg/dL', formula: 'value multiplied by 38.67', decimals: 0 },
+    ],
+    triglycerides: [
+      { label: 'mg/dL to mmol/L', convert: (v) => v / 88.57, unit: 'mmol/L', formula: 'value divided by 88.57', decimals: 2 },
+      { label: 'mmol/L to mg/dL', convert: (v) => v * 88.57, unit: 'mg/dL', formula: 'value multiplied by 88.57', decimals: 0 },
+    ],
+    creatinine: [
+      { label: 'mg/dL to umol/L', convert: (v) => v * 88.4, unit: 'umol/L', formula: 'value multiplied by 88.4', decimals: 0 },
+      { label: 'umol/L to mg/dL', convert: (v) => v / 88.4, unit: 'mg/dL', formula: 'value divided by 88.4', decimals: 2 },
+    ],
+    bun: [
+      { label: 'BUN mg/dL to urea mmol/L', convert: (v) => v * 0.357, unit: 'mmol/L', formula: 'value multiplied by 0.357', decimals: 1 },
+      { label: 'Urea mmol/L to BUN mg/dL', convert: (v) => v / 0.357, unit: 'mg/dL', formula: 'value divided by 0.357', decimals: 0 },
+    ],
+    'uric-acid': [
+      { label: 'mg/dL to umol/L', convert: (v) => v * 59.48, unit: 'umol/L', formula: 'value multiplied by 59.48', decimals: 0 },
+      { label: 'umol/L to mg/dL', convert: (v) => v / 59.48, unit: 'mg/dL', formula: 'value divided by 59.48', decimals: 1 },
+    ],
+    bilirubin: [
+      { label: 'mg/dL to umol/L', convert: (v) => v * 17.104, unit: 'umol/L', formula: 'value multiplied by 17.104', decimals: 0 },
+      { label: 'umol/L to mg/dL', convert: (v) => v / 17.104, unit: 'mg/dL', formula: 'value divided by 17.104', decimals: 1 },
+    ],
+    albumin: [
+      { label: 'g/dL to g/L', convert: (v) => v * 10, unit: 'g/L', formula: 'value multiplied by 10', decimals: 0 },
+      { label: 'g/L to g/dL', convert: (v) => v / 10, unit: 'g/dL', formula: 'value divided by 10', decimals: 1 },
+    ],
+    'vitamin-d': [
+      { label: 'ng/mL to nmol/L', convert: (v) => v * 2.496, unit: 'nmol/L', formula: 'value multiplied by 2.496', decimals: 0 },
+      { label: 'nmol/L to ng/mL', convert: (v) => v / 2.496, unit: 'ng/mL', formula: 'value divided by 2.496', decimals: 0 },
+    ],
+    b12: [
+      { label: 'pg/mL to pmol/L', convert: (v) => v * 0.7378, unit: 'pmol/L', formula: 'value multiplied by 0.7378', decimals: 0 },
+      { label: 'pmol/L to pg/mL', convert: (v) => v / 0.7378, unit: 'pg/mL', formula: 'value divided by 0.7378', decimals: 0 },
+    ],
+    folate: [
+      { label: 'ng/mL to nmol/L', convert: (v) => v * 2.266, unit: 'nmol/L', formula: 'value multiplied by 2.266', decimals: 1 },
+      { label: 'nmol/L to ng/mL', convert: (v) => v / 2.266, unit: 'ng/mL', formula: 'value divided by 2.266', decimals: 1 },
+    ],
+    calcium: [
+      { label: 'mg/dL to mmol/L', convert: (v) => v * 0.2495, unit: 'mmol/L', formula: 'value multiplied by 0.2495', decimals: 2 },
+      { label: 'mmol/L to mg/dL', convert: (v) => v / 0.2495, unit: 'mg/dL', formula: 'value divided by 0.2495', decimals: 1 },
+    ],
+    magnesium: [
+      { label: 'mg/dL to mmol/L', convert: (v) => v * 0.4114, unit: 'mmol/L', formula: 'value multiplied by 0.4114', decimals: 2 },
+      { label: 'mmol/L to mg/dL', convert: (v) => v / 0.4114, unit: 'mg/dL', formula: 'value divided by 0.4114', decimals: 1 },
+    ],
+    iron: [
+      { label: 'ug/dL to umol/L', convert: (v) => v * 0.179, unit: 'umol/L', formula: 'value multiplied by 0.179', decimals: 1 },
+      { label: 'umol/L to ug/dL', convert: (v) => v / 0.179, unit: 'ug/dL', formula: 'value divided by 0.179', decimals: 0 },
+    ],
+    testosterone: [
+      { label: 'ng/dL to nmol/L', convert: (v) => v * 0.0347, unit: 'nmol/L', formula: 'value multiplied by 0.0347', decimals: 1 },
+      { label: 'nmol/L to ng/dL', convert: (v) => v / 0.0347, unit: 'ng/dL', formula: 'value divided by 0.0347', decimals: 0 },
+    ],
+    estradiol: [
+      { label: 'pg/mL to pmol/L', convert: (v) => v * 3.671, unit: 'pmol/L', formula: 'value multiplied by 3.671', decimals: 0 },
+      { label: 'pmol/L to pg/mL', convert: (v) => v / 3.671, unit: 'pg/mL', formula: 'value divided by 3.671', decimals: 0 },
+    ],
+    cortisol: [
+      { label: 'ug/dL to nmol/L', convert: (v) => v * 27.59, unit: 'nmol/L', formula: 'value multiplied by 27.59', decimals: 0 },
+      { label: 'nmol/L to ug/dL', convert: (v) => v / 27.59, unit: 'ug/dL', formula: 'value divided by 27.59', decimals: 1 },
+    ],
+    hemoglobin: [
+      { label: 'g/dL to g/L', convert: (v) => v * 10, unit: 'g/L', formula: 'value multiplied by 10', decimals: 0 },
+      { label: 'g/L to g/dL', convert: (v) => v / 10, unit: 'g/dL', formula: 'value divided by 10', decimals: 1 },
+    ],
+    crp: [
+      { label: 'mg/dL to mg/L', convert: (v) => v * 10, unit: 'mg/L', formula: 'value multiplied by 10', decimals: 1 },
+      { label: 'mg/L to mg/dL', convert: (v) => v / 10, unit: 'mg/dL', formula: 'value divided by 10', decimals: 2 },
+    ],
+    weight: [
+      { label: 'kg to pounds', convert: (v) => v * 2.20462, unit: 'lb', formula: 'value multiplied by 2.20462', decimals: 1 },
+      { label: 'pounds to kg', convert: (v) => v / 2.20462, unit: 'kg', formula: 'value divided by 2.20462', decimals: 1 },
+      { label: 'kg to stone', convert: (v) => v / 6.35029, unit: 'st', formula: 'value divided by 6.35029', decimals: 2 },
+    ],
+    height: [
+      { label: 'cm to inches', convert: (v) => v / 2.54, unit: 'in', formula: 'value divided by 2.54', decimals: 1 },
+      { label: 'inches to cm', convert: (v) => v * 2.54, unit: 'cm', formula: 'value multiplied by 2.54', decimals: 1 },
+    ],
+    temperature: [
+      { label: 'Celsius to Fahrenheit', convert: (v) => (v * 9) / 5 + 32, unit: 'F', formula: '(value x 9/5) + 32', decimals: 1 },
+      { label: 'Fahrenheit to Celsius', convert: (v) => ((v - 32) * 5) / 9, unit: 'C', formula: '(value - 32) x 5/9', decimals: 1 },
+    ],
+    volume: [
+      { label: 'mL to US fluid ounces', convert: (v) => v / 29.5735, unit: 'fl oz', formula: 'value divided by 29.5735', decimals: 2 },
+      { label: 'US fluid ounces to mL', convert: (v) => v * 29.5735, unit: 'mL', formula: 'value multiplied by 29.5735', decimals: 0 },
+      { label: 'teaspoons (US) to mL', convert: (v) => v * 4.929, unit: 'mL', formula: 'value multiplied by 4.929', decimals: 1 },
+      { label: 'tablespoons (US) to mL', convert: (v) => v * 14.787, unit: 'mL', formula: 'value multiplied by 14.787', decimals: 1 },
+    ],
+  };
+
+  const measure = document.getElementById('measure') as HTMLSelectElement;
+  const direction = document.getElementById('direction') as HTMLSelectElement;
+  const input = document.getElementById('input-value') as HTMLInputElement;
+  const result = document.getElementById('result') as HTMLElement;
+  const out = document.getElementById('out-value') as HTMLElement;
+  const formulaEl = document.getElementById('formula') as HTMLElement;
+
+  function fillDirections() {
+    const opts = CONVERSIONS[measure.value];
+    direction.innerHTML = opts
+      .map((o, i) => `<option value="${i}">${o.label}</option>`)
+      .join('');
+  }
+
+  function convert() {
+    const v = parseFloat(input.value);
+    if (!isFinite(v)) {
+      result.hidden = true;
+      return;
+    }
+    const conv = CONVERSIONS[measure.value][Number(direction.value)];
+    const answer = conv.convert(v);
+    out.textContent = `${answer.toFixed(conv.decimals)} ${conv.unit}`;
+    formulaEl.textContent = `Calculated as: ${conv.formula}`;
+    result.hidden = false;
+  }
+
+  measure.addEventListener('change', () => {
+    fillDirections();
+    convert();
+  });
+  direction.addEventListener('change', convert);
+  input.addEventListener('input', convert);
+
+  fillDirections();
+</script>

@@ -1,0 +1,116 @@
+---
+const year = new Date().getFullYear();
+
+const COLUMNS = [
+  {
+    heading: 'Guides',
+    links: [
+      { href: '/guides/', label: 'All guides' },
+      { href: '/templates/', label: 'Letter templates' },
+      { href: '/glossary/', label: 'Glossary' },
+    ],
+  },
+  {
+    heading: 'Tools',
+    links: [
+      { href: '/tools/trackers/', label: 'Printable trackers' },
+      { href: '/tools/out-of-pocket/', label: 'Out-of-pocket estimator' },
+      { href: '/tools/unit-converter/', label: 'Unit converter' },
+      { href: '/tools/medication-supply/', label: 'Medication supply' },
+      { href: '/tools/', label: 'All tools' },
+    ],
+  },
+  {
+    heading: 'Understand your health',
+    links: [
+      { href: '/understand/', label: 'Lab test reference' },
+      { href: '/understand/my-lab-results/', label: 'Questions sheet builder' },
+    ],
+  },
+  {
+    heading: 'About',
+    links: [
+      { href: '/tips/', label: 'Tips' },
+      { href: '/about/', label: 'About us' },
+      { href: '/disclaimer/', label: 'Medical disclaimer' },
+      { href: '/privacy/', label: 'Privacy policy' },
+      { href: '/terms/', label: 'Terms of use' },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      {
+        COLUMNS.map((col) => (
+          <nav aria-label={col.heading}>
+            <h2>{col.heading}</h2>
+            <ul>
+              {col.links.map((l) => (
+                <li>
+                  <a href={l.href}>{l.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="footer-legal">
+      <p>
+        Wellness Med Care publishes plain-English explanations of how health insurance,
+        medical billing, healthcare pricing, and common medical tests work in the United
+        States. We are not healthcare providers, insurers, attorneys, or tax advisors.
+        Nothing here is medical, legal, or financial advice, and nothing here interprets
+        your individual results. For anything clinical, talk to a licensed clinician.
+      </p>
+      <p>
+        Tools on this site run entirely in your browser. Values you enter are never sent
+        to us and are never stored.
+      </p>
+      <p>&copy; {year} Wellness Med Care. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-cols {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    margin-bottom: 2.25rem;
+  }
+  .footer-cols h2 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text);
+    margin: 0 0 0.6rem;
+  }
+  .footer-cols ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-cols li {
+    margin-bottom: 0.35rem;
+  }
+  .footer-cols a {
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .footer-cols a:hover {
+    text-decoration: underline;
+  }
+  .footer-legal {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    max-width: 70ch;
+  }
+  .footer-legal p {
+    margin: 0 0 0.8rem;
+  }
+</style>

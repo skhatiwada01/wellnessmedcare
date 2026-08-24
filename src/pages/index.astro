@@ -1,0 +1,153 @@
+---
+import Base from '../layouts/Base.astro';
+import Support from '../components/Support.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Callout from '../components/Callout.astro';
+import { getCollection } from 'astro:content';
+import { LAB_TESTS } from '../data/labs';
+import { TRACKERS } from '../data/trackers';
+import { GLOSSARY } from '../data/glossary';
+
+const guides = await getCollection('guides', ({ data }) => !data.draft);
+const tips = await getCollection('tips', ({ data }) => !data.draft);
+
+const SECTIONS = [
+  {
+    href: '/guides/',
+    eyebrow: 'Guides',
+    title: 'Make sense of the paperwork',
+    blurb: `Bills, insurance, denials and prices, explained step by step. ${guides.length} guides, plus fill-in letter templates and a ${GLOSSARY.length}-term glossary.`,
+  },
+  {
+    href: '/tools/',
+    eyebrow: 'Tools',
+    title: 'Keep your own records',
+    blurb: `${TRACKERS.length} printable trackers for blood sugar, blood pressure, medications and more, plus calculators and converters. Everything downloads to your device.`,
+  },
+  {
+    href: '/understand/',
+    eyebrow: 'Understand your health',
+    title: 'What that lab test measures',
+    blurb: `${LAB_TESTS.length} common tests explained in plain English, with the questions worth asking. We explain the test - your clinician explains your result.`,
+  },
+  {
+    href: '/tips/',
+    eyebrow: 'Tips',
+    title: 'Walk in prepared',
+    blurb: `${tips.length} practical pages on getting more out of an appointment, preparing for a test, and helping someone else manage their care.`,
+  },
+];
+---
+
+<Base
+  title="Wellness Med Care"
+  description="Free, plain-English health guides, printable trackers, and lab test explanations. Understand your medical bills, your insurance, and your test results - and walk into your appointment prepared."
+>
+  <div class="wrap hero">
+    <div class="prose">
+      <h1>Healthcare is confusing on purpose. We explain it.</h1>
+      <p class="lede">
+        Free, plain-English help with the parts nobody explains: your medical bill, your
+        insurance, your lab report, and the fifteen minutes you get with your doctor.
+      </p>
+      <div class="actions">
+        <a class="btn" href="/understand/">Understand a lab test</a>
+        <a class="btn btn-ghost" href="/tools/trackers/">Download a tracker</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="hub-grid">
+      {
+        SECTIONS.map((s) => (
+          <a class="hub-card" href={s.href}>
+            <p class="eyebrow">{s.eyebrow}</p>
+            <h3>{s.title}</h3>
+            <p>{s.blurb}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="prose" style="margin-top:3rem">
+      <Callout tone="warn" title="What this site is not">
+        <p style="margin:0">
+          We never tell you what condition you have, what your test result means for you,
+          what treatment to get, or which doctor to see. Nothing here is medical, legal, or
+          financial advice. What we do is explain how things work and help you arrive
+          prepared. For anything clinical, talk to a licensed clinician.
+        </p>
+      </Callout>
+    </div>
+
+    <section class="section">
+      <h2>Start here</h2>
+      <div class="grid" style="margin-top:1.25rem">
+        <article class="card">
+          <p class="eyebrow">Most downloaded</p>
+          <h3><a href="/tools/trackers/">Medication and supplement list</a></h3>
+          <p>
+            The document clinicians most often wish patients had. Print it, fill it in,
+            keep a copy in your wallet.
+          </p>
+        </article>
+        <article class="card">
+          <p class="eyebrow">Before your appointment</p>
+          <h3><a href="/understand/my-lab-results/">Turn your lab results into questions</a></h3>
+          <p>
+            Tick the tests on your report and download a sheet of questions to take with
+            you. Nothing you type is saved or sent.
+          </p>
+        </article>
+        <article class="card">
+          <p class="eyebrow">Got a bill you do not understand?</p>
+          <h3><a href="/guides/read-your-eob/">How to read your EOB</a></h3>
+          <p>
+            The Explanation of Benefits is not a bill. Here is what each column means and
+            which number actually matters.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>How we work</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Primary sources only</h3>
+          <p>
+            Every factual claim links to CMS, the IRS, the Department of Labor,
+            HealthCare.gov, or the statute itself - not to another blog.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Dated, not evergreen-forever</h3>
+          <p>
+            Dollar limits and deadlines change every year. Each page shows the date its
+            figures were last verified, so you know what you are reading.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Nothing you type leaves your device</h3>
+          <p>
+            Every tool here runs in your browser. Lab values, weights, account numbers -
+            none of it is sent to us, and none of it is stored.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Nobody pays us for placement</h3>
+          <p>
+            No hospital, insurer, or billing company pays to appear here. The site runs on
+            reader donations and, eventually, ordinary display ads.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="prose">
+      <Newsletter />
+      <Support />
+    </div>
+  </div>
+</Base>

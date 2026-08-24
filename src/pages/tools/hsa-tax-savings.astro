@@ -1,0 +1,134 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="HSA and FSA Tax Savings Estimator"
+  description="Estimate the federal tax you avoid by paying medical costs through an HSA or FSA at your marginal rate, with the 2026 contribution limits built in."
+  h1="HSA / FSA tax savings estimator"
+  lede="Money routed through an HSA or FSA skips federal income tax, and usually payroll tax too. This estimates what that is worth at your bracket."
+>
+  <form class="tool" id="hsa-form" autocomplete="off" slot="tool">
+    <div class="field">
+      <label for="contribution">Planned annual contribution ($)</label>
+      <input id="contribution" type="number" inputmode="decimal" min="0" step="50" placeholder="3000" />
+      <span class="hint" id="limit-hint">
+        2026 limits: HSA $4,400 self-only / $8,750 family (+$1,000 if 55+). Health FSA $3,400.
+      </span>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="bracket">Your marginal federal bracket (%)</label>
+        <select id="bracket">
+          <option value="10">10%</option>
+          <option value="12">12%</option>
+          <option value="22" selected>22%</option>
+          <option value="24">24%</option>
+          <option value="32">32%</option>
+          <option value="35">35%</option>
+          <option value="37">37%</option>
+        </select>
+        <span class="hint">The rate on your last dollar of income, not your average rate.</span>
+      </div>
+      <div class="field">
+        <label for="payroll">Contributing through payroll?</label>
+        <select id="payroll">
+          <option value="yes" selected>Yes - payroll deduction</option>
+          <option value="no">No - direct HSA contribution</option>
+        </select>
+        <span class="hint">Payroll contributions also skip the 7.65% FICA tax.</span>
+      </div>
+    </div>
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Estimate</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Estimated annual tax avoided
+      </p>
+      <p class="big" id="savings-value">-</p>
+      <div id="breakdown" style="margin:.6rem 0 0;font-size:.92rem"></div>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      An estimate, in your browser. Nothing about your finances is sent or stored.
+    </p>
+  </form>
+
+  <h2>What the estimate includes</h2>
+  <p>
+    Contributions avoid federal income tax at your marginal rate. Contributions made
+    through payroll - which covers all FSA contributions and most workplace HSA
+    contributions - also avoid the 7.65% Social Security and Medicare payroll tax.
+    Direct HSA contributions made outside payroll still get the income tax deduction but
+    not the payroll tax break, which is why contributing through your employer is usually
+    worth the small hassle.
+  </p>
+  <p>The estimate deliberately leaves out:</p>
+  <ul>
+    <li><strong>State income tax</strong>, which most states also waive but a couple do not for HSAs - check yours</li>
+    <li><strong>Investment growth</strong> in an HSA, which compounds untaxed and is the larger prize over decades</li>
+    <li><strong>Bracket effects</strong> if the deduction itself drops you into a lower bracket</li>
+  </ul>
+
+  <Callout tone="warn" title="An estimate, not tax advice">
+    <p style="margin:0">
+      Real tax situations involve phase-outs, credits, state rules, and filing details
+      this arithmetic ignores. Treat the number as an order of magnitude, and treat your
+      tax professional as the authority. The account rules themselves - who can
+      contribute, what counts as a qualified expense - are in our guide to
+      <a href="/guides/hsa-fsa-hra/">HSAs, FSAs, and HRAs</a>.
+    </p>
+  </Callout>
+
+  <h2>The part people miss</h2>
+  <p>
+    If you have an HSA and can afford to, paying medical bills out of pocket and keeping
+    the receipts lets the HSA balance compound untaxed - you can reimburse yourself in
+    any future year, tax-free, with no deadline. That turns the account into the most
+    tax-favored retirement vehicle in the US code. The catch is entirely administrative:
+    keep every receipt, forever, somewhere that is not a shoebox.
+  </p>
+</Tool>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const money = (v: number) =>
+    v.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+  document.getElementById('calc')!.addEventListener('click', () => {
+    const result = document.getElementById('result')!;
+    const amount = parseFloat($('contribution').value);
+    const bracket = parseFloat(($('bracket') as unknown as HTMLSelectElement).value) / 100;
+    const viaPayroll = ($('payroll') as unknown as HTMLSelectElement).value === 'yes';
+
+    if (!isFinite(amount) || amount <= 0) {
+      result.hidden = true;
+      return;
+    }
+
+    const income = amount * bracket;
+    const fica = viaPayroll ? amount * 0.0765 : 0;
+    const total = income + fica;
+
+    (document.getElementById('savings-value') as HTMLElement).textContent = money(total);
+    const lines = [
+      `${money(income)} federal income tax at your ${(bracket * 100).toFixed(0)}% marginal rate`,
+    ];
+    if (viaPayroll) lines.push(`${money(fica)} payroll (FICA) tax at 7.65%`);
+    else lines.push('No payroll tax portion - direct contributions get the income tax deduction only');
+    lines.push(`Effectively, ${money(amount)} of medical spending costs you ${money(amount - total)}.`);
+    document.getElementById('breakdown')!.innerHTML = lines
+      .map((l) => `<p style="margin:0 0 .35rem">${l}</p>`)
+      .join('');
+    result.hidden = false;
+  });
+
+  (document.getElementById('hsa-form') as HTMLFormElement).addEventListener('reset', () =>
+    setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
+  );
+</script>

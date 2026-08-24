@@ -1,0 +1,144 @@
+---
+import Base from '../../layouts/Base.astro';
+import Callout from '../../components/Callout.astro';
+import Support from '../../components/Support.astro';
+import { TRACKERS } from '../../data/trackers';
+import { TEMPLATES } from '../../data/templates';
+
+const DOWNLOADS = [
+  {
+    href: '/tools/trackers/',
+    title: 'Printable trackers',
+    blurb: `${TRACKERS.length} blank logs: blood sugar, blood pressure, medications, mood, pregnancy, recovery and more. Print, or download as Word or CSV.`,
+  },
+  {
+    href: '/understand/my-lab-results/',
+    title: 'Lab results questionnaire builder',
+    blurb:
+      'Pick the tests on your report, record your values, choose the questions, add your own, and download one sheet for your appointment.',
+  },
+  {
+    href: '/templates/',
+    title: 'Fill-in letter templates',
+    blurb: `${TEMPLATES.length} letters for hospitals, insurers and collectors. Fill in the blanks and download a finished Word document.`,
+  },
+];
+
+const CALCULATORS = [
+  {
+    href: '/tools/out-of-pocket/',
+    title: 'Out-of-pocket cost estimator',
+    blurb: 'Deductible, coinsurance, and out-of-pocket maximum - what an in-network service will actually cost you.',
+  },
+  {
+    href: '/tools/appeal-deadline/',
+    title: 'Appeal deadline calculator',
+    blurb: 'Enter the date on your denial letter and see when your internal appeal window closes.',
+  },
+  {
+    href: '/tools/medication-supply/',
+    title: 'Medication supply calculator',
+    blurb: 'The date your prescription runs out, and the day to request the refill so it never becomes an emergency.',
+  },
+  {
+    href: '/tools/hsa-tax-savings/',
+    title: 'HSA / FSA tax savings estimator',
+    blurb: 'What routing medical costs through a tax-advantaged account is worth at your bracket.',
+  },
+  {
+    href: '/tools/unit-converter/',
+    title: 'Medical unit converter',
+    blurb: '20 lab measurements between US and international units: glucose, cholesterol, vitamins, hormones and more.',
+  },
+  {
+    href: '/tools/bmi/',
+    title: 'BMI calculator',
+    blurb: 'Metric or imperial, with a plain account of what body mass index does and does not tell you.',
+  },
+  {
+    href: '/tools/waist-to-height/',
+    title: 'Waist-to-height ratio',
+    blurb: 'The other screening number - some health bodies now prefer it to BMI as a first screen.',
+  },
+  {
+    href: '/tools/pack-years/',
+    title: 'Pack-year calculator',
+    blurb: 'The standard measure of smoking history, and the number screening eligibility conversations start from.',
+  },
+  {
+    href: '/tools/due-date/',
+    title: 'Due date calculator',
+    blurb: 'The standard 280-day estimate from the last menstrual period, with gestational age today.',
+  },
+];
+---
+
+<Base
+  title="Free Health and Billing Tools"
+  description={`${CALCULATORS.length} calculators and ${TRACKERS.length}+ downloadable sheets: cost estimators, printable health logs, a lab results questionnaire builder, unit conversion, and letter templates.`}
+>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose">
+      <h1>Tools</h1>
+      <p class="lede">
+        Calculators and downloadable sheets that do something useful in under a minute.
+        All free, none require an account.
+      </p>
+
+      <Callout tone="note" title="Everything here runs in your browser">
+        <p style="margin:0">
+          Every tool on this site does its work on your own device. Values you type -
+          weights, lab results, account numbers, blood sugar readings - are never sent to
+          us and never stored. Files you download are generated locally and go straight
+          to your computer.
+        </p>
+      </Callout>
+    </div>
+
+    <section class="section">
+      <h2>Downloads and printables</h2>
+      <div class="hub-grid" style="margin-top:1.25rem">
+        {
+          DOWNLOADS.map((t) => (
+            <a class="hub-card" href={t.href}>
+              <p class="eyebrow">Download</p>
+              <h3>{t.title}</h3>
+              <p>{t.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Calculators</h2>
+      <div class="hub-grid" style="margin-top:1.25rem">
+        {
+          CALCULATORS.map((t) => (
+            <a class="hub-card" href={t.href}>
+              <p class="eyebrow">Calculator</p>
+              <h3>{t.title}</h3>
+              <p>{t.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <div class="prose" style="margin-top:3rem">
+      <h2>What we will not build</h2>
+      <p>
+        We are not going to build a symptom checker, a triage tool, or anything that takes
+        your numbers and tells you what condition you might have. Those tools need
+        clinicians behind them, and a website that offers one without that is doing
+        something it cannot do safely.
+      </p>
+      <p>
+        What we build instead are tools that help you record things accurately, convert
+        between units, understand a document, estimate a cost, and arrive at an
+        appointment prepared.
+      </p>
+      <Support context="tool" />
+    </div>
+  </div>
+</Base>

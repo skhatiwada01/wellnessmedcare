@@ -1,0 +1,21 @@
+---
+interface Props {
+  sources: { label: string; url: string }[];
+  updated: Date;
+}
+const { sources, updated } = Astro.props;
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+<section class="sources" aria-labelledby="sources-heading">
+  <h2 id="sources-heading">Sources</h2>
+  <ol>
+    {sources.map((s) => (
+      <li><a href={s.url} rel="noopener nofollow" target="_blank">{s.label}</a></li>
+    ))}
+  </ol>
+  <p style="margin-top:1rem;color:var(--text-muted)">
+    Figures and rules on this page are current as of {fmt(updated)}. Dollar limits and
+    deadlines change - check the linked source before you rely on a number.
+  </p>
+</section>

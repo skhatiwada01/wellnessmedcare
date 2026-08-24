@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import Callout from '../../components/Callout.astro';
+import Support from '../../components/Support.astro';
+import { PANELS, testsByPanel, LAB_TESTS, type PanelKey } from '../../data/labs';
+
+const panels = (Object.keys(PANELS) as PanelKey[]).map((key) => ({
+  key,
+  ...PANELS[key],
+  tests: testsByPanel(key),
+}));
+---
+
+<Base
+  title="Understand Your Health"
+  description="Plain-English explanations of what common lab tests measure, why doctors order them, and what questions to ask about your results. Reference only - we never interpret your numbers."
+>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose">
+      <h1>Understand your health</h1>
+      <p class="lede">
+        You got a lab report full of abbreviations and a note saying "results normal" or
+        "call the office." Here is what each of those tests actually measures, in plain
+        English, and what to ask about it.
+      </p>
+
+      <Callout tone="warn" title="We explain the test, not your result">
+        <p style="margin:0 0 .6rem">
+          We do not tell you whether your number is high, low, or concerning, and we do
+          not hold our own reference ranges. Reference ranges legitimately differ between
+          laboratories, methods, ages, and sexes - the range that applies to you is
+          printed on your own report, next to your own result.
+        </p>
+        <p style="margin:0">
+          What we can do is explain what the test measures, what is generally known to
+          move it in each direction, and what to ask your clinician. Only they can tell
+          you what your result means for you.
+        </p>
+      </Callout>
+
+      <p>
+        <a class="btn" href="/understand/my-lab-results/">Build a questions sheet for your appointment</a>
+      </p>
+
+      <p style="color:var(--text-muted)">
+        {LAB_TESTS.length} tests explained so far, grouped by the panel they usually arrive in.
+      </p>
+    </div>
+
+    {
+      panels.map(
+        (p) =>
+          p.tests.length > 0 && (
+            <section class="section" id={p.key}>
+              <h2>{p.label}</h2>
+              <p style="color:var(--text-muted);max-width:60ch">{p.blurb}</p>
+              <div class="grid" style="margin-top:1.25rem">
+                {p.tests.map((t) => (
+                  <article class="card">
+                    <h3>
+                      <a href={`/understand/labs/${t.slug}/`}>{t.name}</a>
+                    </h3>
+                    {t.aka && <p class="meta" style="margin:0;padding:0">{t.aka.join(' - ')}</p>}
+                    <p>{t.short}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ),
+      )
+    }
+
+    <div class="prose" style="margin-top:3rem">
+      <Support />
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,203 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="BMI Calculator"
+  description="Work out your body mass index in metric or imperial units, see which CDC category the number falls in, and understand what BMI does and does not tell you."
+  h1="BMI calculator"
+  lede="Body mass index is your weight divided by the square of your height. It is a rough screening number, widely used because it is easy to calculate - not because it is precise."
+>
+  <form class="tool" id="bmi-form" autocomplete="off" slot="tool">
+    <div class="field">
+      <label for="units">Units</label>
+      <select id="units">
+        <option value="metric">Metric (cm, kg)</option>
+        <option value="imperial">Imperial (ft/in, lb)</option>
+      </select>
+    </div>
+
+    <div id="metric-inputs">
+      <div class="field-row">
+        <div class="field">
+          <label for="cm">Height (cm)</label>
+          <input id="cm" type="number" inputmode="decimal" min="50" max="260" step="0.1" placeholder="170" />
+        </div>
+        <div class="field">
+          <label for="kg">Weight (kg)</label>
+          <input id="kg" type="number" inputmode="decimal" min="10" max="400" step="0.1" placeholder="70" />
+        </div>
+      </div>
+    </div>
+
+    <div id="imperial-inputs" hidden>
+      <div class="field-row">
+        <div class="field">
+          <label for="ft">Height (ft)</label>
+          <input id="ft" type="number" inputmode="numeric" min="1" max="8" step="1" placeholder="5" />
+        </div>
+        <div class="field">
+          <label for="inch">+ inches</label>
+          <input id="inch" type="number" inputmode="decimal" min="0" max="11.9" step="0.1" placeholder="7" />
+        </div>
+        <div class="field">
+          <label for="lb">Weight (lb)</label>
+          <input id="lb" type="number" inputmode="decimal" min="20" max="900" step="0.1" placeholder="154" />
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Calculate</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Your BMI
+      </p>
+      <p class="big" id="bmi-value">-</p>
+      <p style="margin:.4rem 0 0" id="bmi-category"></p>
+      <p style="margin:.6rem 0 0;font-size:.88rem;color:var(--text-muted)">
+        This is a category from a published table, not an assessment of your health.
+      </p>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Calculated in your browser. Your numbers are never sent or stored.
+    </p>
+  </form>
+
+  <h2>What the categories are</h2>
+  <p>
+    For adults aged 20 and over, the CDC groups BMI values into these ranges. They are
+    the same for men and women.
+  </p>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>BMI</th><th>CDC category</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Below 18.5</td><td>Underweight</td></tr>
+        <tr><td>18.5 to 24.9</td><td>Healthy weight</td></tr>
+        <tr><td>25.0 to 29.9</td><td>Overweight</td></tr>
+        <tr><td>30.0 and above</td><td>Obesity</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>What BMI does not tell you</h2>
+  <p>
+    BMI is a ratio of weight to height and nothing else. It cannot distinguish muscle
+    from fat, it says nothing about where body fat sits, and it was never designed to
+    assess an individual - it came out of population statistics.
+  </p>
+  <p>Specifically, the number is a poor guide in these situations:</p>
+  <ul>
+    <li>
+      <strong>Muscular people.</strong> A well-trained athlete can land in the
+      "overweight" or "obesity" range on muscle mass alone.
+    </li>
+    <li>
+      <strong>Older adults.</strong> Muscle is lost with age, so a stable BMI can hide a
+      real change in body composition.
+    </li>
+    <li>
+      <strong>Children and teenagers.</strong> The adult categories do not apply at all;
+      growth charts and percentiles are used instead.
+    </li>
+    <li>
+      <strong>Pregnancy.</strong> BMI is not interpreted the usual way during pregnancy.
+    </li>
+    <li>
+      <strong>Different populations.</strong> Some health bodies use different thresholds
+      for people of South Asian and some other ancestries, because metabolic risk appears
+      at lower BMI values in those populations.
+    </li>
+  </ul>
+  <p>
+    A related number that some health bodies now prefer as a first screen is the
+    <a href="/tools/waist-to-height/">waist-to-height ratio</a>, because it captures
+    where weight sits rather than just how much there is.
+  </p>
+
+  <Callout tone="warn" title="A number is not a plan">
+    <p style="margin:0">
+      We are not going to tell you what to do about your BMI, because that depends on
+      your muscle mass, your medical history, your medications, and a physical
+      examination - none of which a web page has. If the number prompts a question, that
+      question belongs in an appointment. Our guide on
+      <a href="/tips/talking-about-weight/">preparing for that conversation</a> may help.
+    </p>
+  </Callout>
+
+  <h2>Where this comes from</h2>
+  <p>
+    The formula and the adult categories are published by the CDC:
+    <a href="https://www.cdc.gov/bmi/adult-calculator/index.html" rel="noopener nofollow" target="_blank">cdc.gov/bmi</a>.
+  </p>
+</Tool>
+
+<script>
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+
+  const units = $<HTMLSelectElement>('units');
+  const metric = $<HTMLElement>('metric-inputs');
+  const imperial = $<HTMLElement>('imperial-inputs');
+  const result = $<HTMLElement>('result');
+  const valueEl = $<HTMLElement>('bmi-value');
+  const catEl = $<HTMLElement>('bmi-category');
+
+  units.addEventListener('change', () => {
+    const isMetric = units.value === 'metric';
+    metric.hidden = !isMetric;
+    imperial.hidden = isMetric;
+    result.hidden = true;
+  });
+
+  function category(bmi: number): string {
+    if (bmi < 18.5) return 'The CDC places this in the "underweight" range for adults.';
+    if (bmi < 25) return 'The CDC places this in the "healthy weight" range for adults.';
+    if (bmi < 30) return 'The CDC places this in the "overweight" range for adults.';
+    return 'The CDC places this in the "obesity" range for adults.';
+  }
+
+  function calculate() {
+    let bmi = NaN;
+
+    if (units.value === 'metric') {
+      const cm = parseFloat($<HTMLInputElement>('cm').value);
+      const kg = parseFloat($<HTMLInputElement>('kg').value);
+      if (cm > 0 && kg > 0) bmi = kg / (cm / 100) ** 2;
+    } else {
+      const ft = parseFloat($<HTMLInputElement>('ft').value) || 0;
+      const inch = parseFloat($<HTMLInputElement>('inch').value) || 0;
+      const lb = parseFloat($<HTMLInputElement>('lb').value);
+      const totalInches = ft * 12 + inch;
+      if (totalInches > 0 && lb > 0) bmi = (lb / totalInches ** 2) * 703;
+    }
+
+    if (!isFinite(bmi) || bmi <= 0) {
+      result.hidden = true;
+      return;
+    }
+
+    valueEl.textContent = bmi.toFixed(1);
+    catEl.textContent = category(bmi);
+    result.hidden = false;
+  }
+
+  $('calc').addEventListener('click', calculate);
+  $<HTMLFormElement>('bmi-form').addEventListener('reset', () => {
+    setTimeout(() => (result.hidden = true), 0);
+  });
+  $<HTMLFormElement>('bmi-form').addEventListener('keydown', (e) => {
+    if ((e as KeyboardEvent).key === 'Enter') {
+      e.preventDefault();
+      calculate();
+    }
+  });
+</script>

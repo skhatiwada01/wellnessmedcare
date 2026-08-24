@@ -1,0 +1,173 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="Out-of-Pocket Cost Estimator"
+  description="Estimate what an in-network medical service will actually cost you, given your deductible progress, coinsurance, and out-of-pocket maximum."
+  h1="Out-of-pocket cost estimator"
+  lede="Enter your plan's numbers from your insurance card or portal, plus the allowed amount for a service, and see how the deductible, coinsurance, and out-of-pocket maximum split the bill."
+>
+  <form class="tool" id="oop-form" autocomplete="off" slot="tool">
+    <h3 style="margin:0 0 .75rem">Your plan</h3>
+    <div class="field-row">
+      <div class="field">
+        <label for="deductible">Annual deductible ($)</label>
+        <input id="deductible" type="number" inputmode="decimal" min="0" step="1" placeholder="2000" />
+      </div>
+      <div class="field">
+        <label for="deductible-met">Deductible met so far ($)</label>
+        <input id="deductible-met" type="number" inputmode="decimal" min="0" step="1" placeholder="0" />
+        <span class="hint">From your portal or latest EOB.</span>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="coinsurance">Your coinsurance (%)</label>
+        <input id="coinsurance" type="number" inputmode="decimal" min="0" max="100" step="1" placeholder="20" />
+      </div>
+      <div class="field">
+        <label for="oop-max">Out-of-pocket maximum ($)</label>
+        <input id="oop-max" type="number" inputmode="decimal" min="0" step="1" placeholder="7000" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="oop-met">Out-of-pocket spent so far ($)</label>
+      <input id="oop-met" type="number" inputmode="decimal" min="0" step="1" placeholder="0" />
+    </div>
+
+    <h3 style="margin:1.25rem 0 .75rem">The service</h3>
+    <div class="field">
+      <label for="allowed">Allowed amount ($)</label>
+      <input id="allowed" type="number" inputmode="decimal" min="0" step="1" placeholder="900" />
+      <span class="hint">
+        The plan's negotiated price, not the billed price. Get it from your insurer's cost
+        estimator or the provider.
+      </span>
+    </div>
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Estimate</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <p style="margin:0 0 .2rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+        Your estimated share
+      </p>
+      <p class="big" id="your-share">-</p>
+      <div id="breakdown" style="margin:.75rem 0 0;font-size:.92rem"></div>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Runs in your browser. Your plan details are never sent or stored.
+    </p>
+  </form>
+
+  <h2>How the math works</h2>
+  <p>The calculation follows the same order your insurer applies:</p>
+  <ol class="steps">
+    <li>
+      <strong>Deductible first.</strong> Whatever remains of your deductible comes out of
+      the allowed amount at 100% your cost.
+    </li>
+    <li>
+      <strong>Coinsurance on the rest.</strong> Anything above the remaining deductible is
+      split - you pay your coinsurance percentage of it.
+    </li>
+    <li>
+      <strong>The out-of-pocket maximum caps everything.</strong> Your total for the year
+      cannot exceed what is left of your out-of-pocket maximum, whatever steps 1 and 2
+      say.
+    </li>
+  </ol>
+  <p>
+    If any of those words are fuzzy, our guide to
+    <a href="/guides/deductible-copay-coinsurance/">deductibles, copays, and coinsurance</a>
+    walks through a full plan year with real numbers.
+  </p>
+
+  <Callout tone="warn" title="What this cannot know">
+    <p style="margin:0 0 .6rem">
+      This is arithmetic on the numbers you enter, and real claims have complications the
+      arithmetic cannot see: services billed with a copay instead of coinsurance, multiple
+      billers for one visit (facility, physician, anesthesia), non-covered line items, and
+      out-of-network processing - which uses a separate deductible entirely.
+    </p>
+    <p style="margin:0">
+      Treat the result as a planning estimate. Your insurer's own cost estimator, which
+      knows your actual plan design, is the better predictor - this tool is for
+      understanding how the pieces interact, and for checking a bill after the fact
+      against <a href="/guides/read-your-eob/">your EOB</a>.
+    </p>
+  </Callout>
+
+  <h2>Where to find your numbers</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Number</th><th>Where it lives</th></tr></thead>
+      <tbody>
+        <tr><td>Deductible and OOP max</td><td>Your Summary of Benefits and Coverage, page 1, or your member portal</td></tr>
+        <tr><td>Progress toward both</td><td>Member portal dashboard, or the year-to-date box on any recent EOB</td></tr>
+        <tr><td>Allowed amount</td><td>Your insurer's cost estimator tool, or the hospital's <a href="/guides/what-things-actually-cost/">published prices</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</Tool>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const num = (id: string, fallback = NaN) => {
+    const v = parseFloat($(id).value);
+    return isFinite(v) && v >= 0 ? v : fallback;
+  };
+  const money = (v: number) =>
+    v.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+  document.getElementById('calc')!.addEventListener('click', () => {
+    const result = document.getElementById('result')!;
+    const deductible = num('deductible');
+    const deductibleMet = Math.min(num('deductible-met', 0), isFinite(deductible) ? deductible : Infinity);
+    const coinsurance = num('coinsurance');
+    const oopMax = num('oop-max');
+    const oopMet = num('oop-met', 0);
+    const allowed = num('allowed');
+
+    if (![deductible, coinsurance, oopMax, allowed].every(isFinite)) {
+      result.hidden = true;
+      return;
+    }
+
+    const deductibleLeft = Math.max(0, deductible - deductibleMet);
+    const oopLeft = Math.max(0, oopMax - oopMet);
+
+    const deductiblePortion = Math.min(allowed, deductibleLeft);
+    const coinsurancePortion = Math.max(0, allowed - deductiblePortion) * (coinsurance / 100);
+    const beforeCap = deductiblePortion + coinsurancePortion;
+    const yourShare = Math.min(beforeCap, oopLeft);
+    const capped = beforeCap > oopLeft;
+
+    (document.getElementById('your-share') as HTMLElement).textContent = money(yourShare);
+
+    const lines: string[] = [];
+    if (deductiblePortion > 0)
+      lines.push(`${money(deductiblePortion)} toward your remaining deductible (${money(deductibleLeft)} left before this)`);
+    if (coinsurancePortion > 0 && !capped)
+      lines.push(`${money(coinsurancePortion)} as ${coinsurance}% coinsurance on the remaining ${money(allowed - deductiblePortion)}`);
+    if (capped)
+      lines.push(`Capped by your out-of-pocket maximum - only ${money(oopLeft)} of room remained. The plan pays the rest.`);
+    if (yourShare === 0)
+      lines.push('You appear to have reached your out-of-pocket maximum - covered in-network services should cost you nothing further this plan year.');
+    lines.push(`The plan pays ${money(Math.max(0, allowed - yourShare))} of the ${money(allowed)} allowed amount.`);
+
+    document.getElementById('breakdown')!.innerHTML = lines
+      .map((l) => `<p style="margin:0 0 .4rem">${l}</p>`)
+      .join('');
+    result.hidden = false;
+  });
+
+  (document.getElementById('oop-form') as HTMLFormElement).addEventListener('reset', () =>
+    setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
+  );
+</script>

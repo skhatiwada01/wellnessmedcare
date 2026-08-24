@@ -1,0 +1,22 @@
+{
+  "name": "wellnessmedcare",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "og": "node scripts/og-image.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.7",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.2.4",
+    "docx": "^9.7.1"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.3"
+  }
+}

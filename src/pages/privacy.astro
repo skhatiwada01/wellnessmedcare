@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+const updated = 'August 23, 2026';
+const CONTACT = 'privacy@wellnessmedcare.com';
+---
+<Base
+  title="Privacy Policy"
+  description="What Wellness Med Care collects, why, and how to opt out. We do not collect health information."
+>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose prose-center">
+      <h1>Privacy Policy</h1>
+      <p class="lede">Last updated: {updated}</p>
+
+      <h2>The short version</h2>
+      <p>
+        We do not ask for, collect, or store health information about you. We do not sell
+        personal information. The only personal information we collect is an email address,
+        and only if you type one into a form on purpose.
+      </p>
+
+      <h2>What we collect</h2>
+      <p><strong>Information you give us.</strong> If you subscribe to our newsletter or
+      contact us, we collect the email address and any message you send. That is it.</p>
+      <p><strong>Information collected automatically.</strong> Like most websites, our host
+      and analytics record standard technical data: IP address, browser and device type,
+      referring page, and the pages you visit. We use this to understand which guides are
+      useful, not to build a profile of you.</p>
+      <p><strong>Information we do not collect.</strong> We do not ask for your name,
+      address, phone number, date of birth, Social Security number, insurance member ID,
+      diagnoses, medications, or any other health information. Our tools that involve
+      numbers run entirely in your browser - the values you type are not transmitted
+      to us or stored on our servers.</p>
+
+      <h2>Cookies and advertising</h2>
+      <p>
+        We use cookies and similar technologies for basic site function and analytics. We
+        intend to display third-party advertising, including Google AdSense, once the site
+        is eligible. Advertising partners may set their own cookies and may use them to
+        show ads based on your prior visits to this and other websites.
+      </p>
+      <p>
+        You can opt out of personalized Google advertising through
+        <a href="https://myadcenter.google.com/" rel="noopener nofollow" target="_blank">Google Ad Settings</a>,
+        and out of many other vendors at
+        <a href="https://optout.aboutads.info/" rel="noopener nofollow" target="_blank">optout.aboutads.info</a>.
+        Where required by law, we ask for your consent before setting non-essential cookies,
+        and you can change that choice at any time through the cookie banner.
+      </p>
+      <p>
+        We deliberately do not place advertising or analytics identifiers on pages in a way
+        that would associate you with a specific medical condition.
+      </p>
+
+      <h2>How we use information</h2>
+      <ul>
+        <li>To send the newsletter you asked for, and nothing else</li>
+        <li>To measure which content is read, so we know what to write next</li>
+        <li>To keep the site secure and working</li>
+        <li>To comply with law</li>
+      </ul>
+
+      <h2>Sharing</h2>
+      <p>
+        We do not sell or rent personal information, and we do not share it with lead
+        buyers, insurers, providers, or data brokers. We share limited data with service
+        providers who operate the site on our behalf - our host, our analytics
+        provider, our email provider, and our advertising partner - and only so they
+        can perform those services. We may disclose information if required by law.
+      </p>
+
+      <h2>Your choices and rights</h2>
+      <p>
+        Every newsletter has an unsubscribe link, and unsubscribing deletes your address
+        from our list. Depending on where you live, you may have the right to access,
+        correct, delete, or port your personal information, to opt out of sale or sharing
+        and targeted advertising, and to be free from discrimination for exercising those
+        rights. We honor the Global Privacy Control signal as an opt-out of sale and
+        sharing. To make a request, email <a href={`mailto:${CONTACT}`}>{CONTACT}</a>.
+      </p>
+
+      <h2>Children</h2>
+      <p>
+        This site is intended for adults. We do not knowingly collect personal information
+        from anyone under 13.
+      </p>
+
+      <h2>Security and retention</h2>
+      <p>
+        We use reasonable safeguards to protect the little information we hold, and we keep
+        email addresses only for as long as you stay subscribed. No method of transmission
+        over the internet is completely secure.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        If we change this policy we will update the date above and, for significant changes,
+        say so on the site.
+      </p>
+
+      <h2>Contact</h2>
+      <p>Questions about privacy: <a href={`mailto:${CONTACT}`}>{CONTACT}</a></p>
+    </div>
+  </div>
+</Base>
