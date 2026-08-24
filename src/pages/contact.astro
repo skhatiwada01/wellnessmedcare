@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import Callout from '../components/Callout.astro';
+
+const CORRECTIONS = 'corrections@wellnessmedcare.com';
+const HELLO = 'hello@wellnessmedcare.com';
+const PRIVACY = 'privacy@wellnessmedcare.com';
+---
+
+<Base
+  title="Contact & Corrections"
+  description="Report an error, suggest a topic, or ask a question about Wellness Med Care. We fix mistakes fast and credit the catch."
+>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose prose-center">
+      <h1>Contact us</h1>
+      <p class="lede">
+        Found a mistake? That is the email we answer fastest. Everything on this site is
+        checked against primary sources, and when we are wrong anyway, we want to know
+        the same day.
+      </p>
+
+      <h2>Corrections</h2>
+      <p>
+        If a number, a deadline, a rule, or an explanation on this site is wrong or out
+        of date, email <a href={`mailto:${CORRECTIONS}`}>{CORRECTIONS}</a> with the page
+        address and what you believe is incorrect. A link to a source helps but is not
+        required. Corrections are made quickly, and the page's "current as of" date is
+        updated when they are.
+      </p>
+
+      <h2>Suggestions and everything else</h2>
+      <p>
+        Topic requests, a tracker you wish existed, a letter template we should add, or
+        anything else: <a href={`mailto:${HELLO}`}>{HELLO}</a>. We read everything, and
+        the roadmap genuinely moves based on what people ask for.
+      </p>
+
+      <h2>Privacy requests</h2>
+      <p>
+        Questions about your data, or requests under a privacy law:
+        <a href={`mailto:${PRIVACY}`}>{PRIVACY}</a>. Our
+        <a href="/privacy/">privacy policy</a> describes the little we collect.
+      </p>
+
+      <Callout tone="warn" title="What we cannot answer">
+        <p style="margin:0">
+          We cannot answer questions about your health, your symptoms, your test results,
+          or your treatment - not because we do not care, but because we are not
+          clinicians and answering would be harmful pretending. Those questions belong to
+          a licensed clinician who can actually see your chart. If you are in a medical
+          emergency, call 911.
+        </p>
+      </Callout>
+
+      <h2>What to expect</h2>
+      <p>
+        This site is run by a very small team. We aim to answer corrections within a day
+        or two and everything else within a week. There is no phone number, and we do not
+        do sales calls, link exchanges, or paid placement - please do not ask.
+      </p>
+    </div>
+  </div>
+</Base>

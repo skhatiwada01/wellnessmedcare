@@ -73,14 +73,15 @@ deliberately no `prefers-color-scheme` default - light is the default regardless
 
 **Before launch**
 
+- Work through [POST-DEPLOYMENT.md](POST-DEPLOYMENT.md) after the DNS switch
 - Point the domain at this build and retire the placeholder site
 - Set `NEWSLETTER_ENDPOINT` in `src/components/Newsletter.astro` - while it is empty the
   signup form does not render at all, which is deliberate
-- Add a cookie consent banner (required before ads, and for GDPR/CCPA)
+- Cookie consent banner is only needed once ads or cookie-based analytics are added;
+  the GoatCounter flag in `src/layouts/Base.astro` is cookieless and needs none
 - Have a lawyer review `src/pages/privacy.astro` and `src/pages/terms.astro` - they are
   reasonable starting drafts, not reviewed documents
-- Replace the placeholder contact addresses in those two files
-- Add a real Open Graph image (`og:image` is not currently set)
+- Create the three mailboxes listed in POST-DEPLOYMENT.md (corrections@, hello@, privacy@)
 
 **Before applying to AdSense**
 
@@ -112,8 +113,9 @@ reading your Summary of Benefits and Coverage, ER vs. urgent care on cost only, 
 debt and credit reports, COBRA vs. marketplace after job loss, open enrollment worksheet.
 
 *Tools to consider*: plan comparison worksheet, COBRA vs. marketplace cost comparison,
-and a hospital price lookup built on CMS machine-readable files - the hard one, and the
-only genuinely defensible moat available to a small team.
+and the hospital price lookup built on CMS machine-readable files - fully scoped in
+[docs/PRICE-LOOKUP-SCOPE.md](docs/PRICE-LOOKUP-SCOPE.md), research notes in
+[docs/research/](docs/research/).
 
 ## Revenue
 

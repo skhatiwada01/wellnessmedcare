@@ -205,6 +205,7 @@ th { font-weight: 650; background: var(--surface-alt); }
 .header-controls { display: flex; align-items: center; gap: .4rem; }
 .icon-btn {
   display: grid; place-items: center;
+  text-decoration: none;
   width: 2.1rem; height: 2.1rem; padding: 0;
   border: 1px solid var(--border); border-radius: 7px;
   background: var(--surface); color: var(--text-muted);
