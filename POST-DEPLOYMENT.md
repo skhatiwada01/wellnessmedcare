@@ -66,10 +66,10 @@ bottom; the order matters for the first three.
 - [ ] **Revisit ad placement rules**: never on tool result screens in a way that could
       be mistaken for the result, and never adjacent to content about a specific
       health condition in a way that lets ad targeting infer the reader's condition.
-- [ ] **Consider the newsletter**: set `NEWSLETTER_ENDPOINT` in
-      `src/components/Newsletter.astro` once there is an email provider (Buttondown is
-      the low-effort option). The Bill Dispute Kit lead magnet is already written into
-      the component copy.
+- [ ] **Consider the newsletter**: set the `PUBLIC_NEWSLETTER_ENDPOINT` environment
+      variable (see .env.example) once there is an email provider (Buttondown is the
+      low-effort option) and redeploy. The Bill Dispute Kit lead magnet is already
+      written into the component copy.
 
 ## Standing calendar
 
