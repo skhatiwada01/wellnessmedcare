@@ -1,10 +1,11 @@
 ---
 /**
- * Set this to your form provider's POST endpoint (Buttondown, ConvertKit, Formspree,
- * MailerLite, etc). While it is empty the component renders nothing, so we never
- * ship a form that silently drops addresses.
+ * Your form provider's POST endpoint (Buttondown, ConvertKit, Formspree, MailerLite,
+ * etc), set via PUBLIC_NEWSLETTER_ENDPOINT at build time - see .env.example. While it
+ * is empty the component renders nothing, so we never ship a form that silently drops
+ * addresses.
  */
-const NEWSLETTER_ENDPOINT = '';
+const NEWSLETTER_ENDPOINT = import.meta.env.PUBLIC_NEWSLETTER_ENDPOINT ?? '';
 ---
 {NEWSLETTER_ENDPOINT && (
   <section class="support" aria-labelledby="newsletter-heading">

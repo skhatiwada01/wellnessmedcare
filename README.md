@@ -79,16 +79,23 @@ deliberately no `prefers-color-scheme` default - light is the default regardless
 
 **Privacy.** No tool transmits input. Do not add analytics that carry entered values.
 
+**Analytics and env vars.** All optional settings live in environment variables,
+documented in [.env.example](.env.example) - copy it to `.env` locally or set them in
+the host's environment settings, then rebuild (they are baked in at build time).
+Google Analytics (`PUBLIC_GA_MEASUREMENT_ID`) is consent-gated: a banner appears
+automatically and no request reaches Google until the visitor accepts; the choice is
+changeable on the privacy page. GoatCounter (`PUBLIC_GOATCOUNTER_CODE`) is cookieless
+and needs no banner. The newsletter form renders only when
+`PUBLIC_NEWSLETTER_ENDPOINT` is set.
+
 ## Things that still need doing
 
 **Before launch**
 
 - Work through [POST-DEPLOYMENT.md](POST-DEPLOYMENT.md) after the DNS switch
 - Point the domain at this build and retire the placeholder site
-- Set `NEWSLETTER_ENDPOINT` in `src/components/Newsletter.astro` - while it is empty the
-  signup form does not render at all, which is deliberate
-- Cookie consent banner is only needed once ads or cookie-based analytics are added;
-  the GoatCounter flag in `src/layouts/Base.astro` is cookieless and needs none
+- Decide the [.env.example](.env.example) settings for the production build
+  (analytics choice, newsletter endpoint)
 - Have a lawyer review `src/pages/privacy.astro` and `src/pages/terms.astro` - they are
   reasonable starting drafts, not reviewed documents
 - Create the three mailboxes listed in POST-DEPLOYMENT.md (corrections@, hello@, privacy@)

@@ -1,0 +1,147 @@
+---
+/**
+ * Analytics, both optional, both configured via environment variables at BUILD time
+ * (see .env.example). With neither set, this component renders nothing at all.
+ *
+ * - PUBLIC_GOATCOUNTER_CODE: cookieless pageview counts. No personal data, no
+ *   cookies, so no consent banner is required.
+ * - PUBLIC_GA_MEASUREMENT_ID: Google Analytics 4. GA sets cookies, so it is gated
+ *   behind a consent banner: NO request to Google is made until the visitor
+ *   explicitly accepts. Decline is remembered and nothing ever loads. Any element
+ *   with a data-reset-analytics attribute (there is one on the privacy page) clears
+ *   the stored choice so the banner can be answered again.
+ *
+ * Editorial rule (CONTENT.md): analytics must never carry values a reader typed
+ * into a tool. Pageviews only - do not add custom events for tool inputs.
+ */
+const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '';
+const goatcounter = import.meta.env.PUBLIC_GOATCOUNTER_CODE ?? '';
+---
+
+{
+  goatcounter && (
+    <script
+      is:inline
+      data-goatcounter={`https://${goatcounter}.goatcounter.com/count`}
+      async
+      src="https://gc.zgo.at/count.js"
+    />
+  )
+}
+
+{
+  gaId && (
+    <>
+      <div id="consent-banner" class="consent-banner" role="region" aria-label="Analytics consent" hidden>
+        <p>
+          Can we use Google Analytics to see which pages help people? Nothing loads
+          unless you say yes, and your answer is remembered on this device.
+          <a href="/privacy/">Privacy policy</a>
+        </p>
+        <div class="consent-actions">
+          <button class="btn" type="button" id="consent-accept">Allow analytics</button>
+          <button class="btn btn-ghost" type="button" id="consent-decline">No thanks</button>
+        </div>
+      </div>
+
+      <script is:inline define:vars={{ gaId }}>
+        (function () {
+          var KEY = 'wmc-analytics-consent';
+
+          function loadGA() {
+            if (window.__wmcGaLoaded) return;
+            window.__wmcGaLoaded = true;
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function () {
+              dataLayer.push(arguments);
+            };
+            gtag('js', new Date());
+            gtag('config', gaId);
+            var s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+            document.head.appendChild(s);
+          }
+
+          var choice = null;
+          try {
+            choice = localStorage.getItem(KEY);
+          } catch (e) {}
+
+          var banner = document.getElementById('consent-banner');
+          if (choice === 'granted') {
+            loadGA();
+          } else if (choice !== 'denied' && banner) {
+            banner.hidden = false;
+          }
+
+          function decide(value) {
+            try {
+              localStorage.setItem(KEY, value);
+            } catch (e) {}
+            if (banner) banner.hidden = true;
+            if (value === 'granted') loadGA();
+          }
+
+          var accept = document.getElementById('consent-accept');
+          var decline = document.getElementById('consent-decline');
+          if (accept) accept.addEventListener('click', function () { decide('granted'); });
+          if (decline) decline.addEventListener('click', function () { decide('denied'); });
+
+          document.querySelectorAll('[data-reset-analytics]').forEach(function (el) {
+            el.addEventListener('click', function () {
+              try {
+                localStorage.removeItem(KEY);
+              } catch (e) {}
+              window.location.reload();
+            });
+          });
+        })();
+      </script>
+    </>
+  )
+}
+
+<style>
+  .consent-banner {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem 1.5rem;
+    padding: 0.9rem 1.25rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  }
+  .consent-banner[hidden] {
+    display: none;
+  }
+  .consent-banner p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 52ch;
+  }
+  .consent-banner a {
+    margin-left: 0.35rem;
+  }
+  .consent-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex: none;
+  }
+  .consent-actions .btn {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.9rem;
+  }
+  @media print {
+    .consent-banner {
+      display: none !important;
+    }
+  }
+</style>

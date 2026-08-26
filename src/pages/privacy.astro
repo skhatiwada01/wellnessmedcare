@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-const updated = 'August 23, 2026';
+const updated = 'August 25, 2026';
+const hasGA = Boolean(import.meta.env.PUBLIC_GA_MEASUREMENT_ID);
 const CONTACT = 'privacy@wellnessmedcare.com';
 ---
 <Base
@@ -47,6 +48,15 @@ const CONTACT = 'privacy@wellnessmedcare.com';
         Where required by law, we ask for your consent before setting non-essential cookies,
         and you can change that choice at any time through the cookie banner.
       </p>
+      {hasGA && (
+        <p>
+          Google Analytics runs on this site only if you allowed it. No request is made
+          to Google until you accept, and declining is remembered.
+          <button type="button" data-reset-analytics class="btn btn-ghost" style="margin-left:.5rem;font-size:.85rem;padding:.3rem .7rem">
+            Change my analytics choice
+          </button>
+        </p>
+      )}
       <p>
         We deliberately do not place advertising or analytics identifiers on pages in a way
         that would associate you with a specific medical condition.

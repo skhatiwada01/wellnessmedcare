@@ -70,7 +70,9 @@ Two panel-specific patterns:
 
 Every tool runs client-side. Nothing a reader types may be transmitted or stored - this
 is both a privacy promise made on the site and the reason it is safe to offer these for
-health data. Do not add analytics events that carry entered values.
+health data. Do not add analytics events that carry entered values. Cookie-setting
+analytics (Google Analytics) must stay behind the consent banner - nothing may load
+before the visitor accepts.
 
 Calculators may report a published categorisation of a computed number (the CDC BMI
 table) but may not add advice about what to do next.

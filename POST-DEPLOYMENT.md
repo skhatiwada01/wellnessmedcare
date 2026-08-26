@@ -25,11 +25,15 @@ bottom; the order matters for the first three.
 
 ## Week one
 
-- [ ] **Turn on analytics.** Create a free account at goatcounter.com, then set
-      `GOATCOUNTER_CODE` in `src/layouts/Base.astro` and redeploy. GoatCounter is
-      cookieless, so no consent banner is needed. Do NOT swap in Google Analytics
-      without adding a consent banner first - and never add analytics that could
-      associate a visitor with a health topic in a way we would be ashamed to explain.
+- [ ] **Turn on analytics.** Two supported options, set as environment variables in
+      the host's settings and redeploy (see .env.example):
+      - `PUBLIC_GA_MEASUREMENT_ID` - Google Analytics 4. The consent banner appears
+        automatically; no request reaches Google until a visitor accepts, and the
+        choice is changeable on the privacy page. Create the GA4 property first and
+        set data retention + IP settings consciously.
+      - `PUBLIC_GOATCOUNTER_CODE` - cookieless GoatCounter, no banner at all.
+      Either way: never add analytics events that carry values a reader typed into a
+      tool, and never in a way that associates a visitor with a health condition.
 - [ ] **Check social previews**: paste a few URLs into the sharing debuggers -
       Facebook (developers.facebook.com/tools/debug), LinkedIn Post Inspector, and a
       Slack/Discord message - and confirm the OG image renders. Regenerate with
