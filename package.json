@@ -8,13 +8,15 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
-    "og": "node scripts/og-image.mjs"
+    "og": "node scripts/og-image.mjs",
+    "start": "node scripts/serve.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.7",
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.2.4",
-    "docx": "^9.7.1"
+    "docx": "^9.7.1",
+    "serve-handler": "^6.1.7"
   },
   "devDependencies": {
     "pagefind": "^1.5.2",

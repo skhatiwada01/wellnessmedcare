@@ -21,7 +21,17 @@ npm run dev
 npm run build
 ```
 
+```bash
+npm run start
+```
+
 Dev server runs at `http://localhost:4321`. Build output goes to `dist/`.
+
+`npm run start` serves the built `dist/` in production on a Node host (VPS, Render,
+Railway) - it honors `PORT`, sends immutable caching for hashed assets, sets security
+headers, and serves the site's own 404 page. Run `npm run build` first. On
+Netlify/Cloudflare Pages it is not needed - those platforms serve `dist/` directly
+and apply the headers from `netlify.toml`.
 
 ## Checking internal links after a build
 
