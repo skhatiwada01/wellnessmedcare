@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
+import { GA_MEASUREMENT_ID } from '../site-config';
 const updated = 'August 25, 2026';
-const hasGA = Boolean(import.meta.env.PUBLIC_GA_MEASUREMENT_ID);
+const hasGA = Boolean(GA_MEASUREMENT_ID);
 const CONTACT = 'support@sisrallc.com';
 ---
 <Base

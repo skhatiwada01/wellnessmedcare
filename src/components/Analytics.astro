@@ -5,7 +5,8 @@
  *
  * - PUBLIC_GOATCOUNTER_CODE: cookieless pageview counts. No personal data, no
  *   cookies, so no consent banner is required.
- * - PUBLIC_GA_MEASUREMENT_ID: Google Analytics 4. GA sets cookies, so it is gated
+ * - GA_MEASUREMENT_ID (site default in src/site-config.ts, overridable via
+ *   PUBLIC_GA_MEASUREMENT_ID): Google Analytics 4. GA sets cookies, so it is gated
  *   behind a consent banner: NO request to Google is made until the visitor
  *   explicitly accepts. Decline is remembered and nothing ever loads. Any element
  *   with a data-reset-analytics attribute (there is one on the privacy page) clears
@@ -14,8 +15,10 @@
  * Editorial rule (CONTENT.md): analytics must never carry values a reader typed
  * into a tool. Pageviews only - do not add custom events for tool inputs.
  */
-const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '';
-const goatcounter = import.meta.env.PUBLIC_GOATCOUNTER_CODE ?? '';
+import { GA_MEASUREMENT_ID, GOATCOUNTER_CODE } from '../site-config';
+
+const gaId = GA_MEASUREMENT_ID;
+const goatcounter = GOATCOUNTER_CODE;
 ---
 
 {
