@@ -1,0 +1,230 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="COBRA vs. Marketplace Cost Comparison"
+  description="Compare staying on COBRA against a marketplace plan after losing job coverage, including the deductible-reset effect. Arithmetic only, in your browser."
+  h1="COBRA vs. marketplace calculator"
+  lede="COBRA keeps your plan and your deductible progress but costs the full premium. A marketplace plan may cost less per month but resets your deductible to zero. This runs both sides of that arithmetic."
+>
+  <form class="tool" id="cvm-form" autocomplete="off" slot="tool">
+    <div class="field-row">
+      <div class="field">
+        <label for="months">Months to compare</label>
+        <input id="months" type="number" inputmode="numeric" min="1" max="18" step="1" value="6" />
+        <span class="hint">Until new job coverage, Medicare, or year end. COBRA usually runs up to 18 months.</span>
+      </div>
+      <div class="field">
+        <label for="care">Expected care in that period ($, allowed)</label>
+        <input id="care" type="number" inputmode="decimal" min="0" step="100" placeholder="2000" />
+      </div>
+    </div>
+
+    <fieldset class="side-set">
+      <legend>COBRA (your current plan)</legend>
+      <div class="field">
+        <label for="cobra-premium">COBRA monthly premium ($)</label>
+        <input id="cobra-premium" type="number" inputmode="decimal" min="0" step="1" />
+        <span class="hint">The election notice states it: the full premium plus up to a 2% fee.</span>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="c-deductible">Plan deductible ($)</label>
+          <input id="c-deductible" type="number" inputmode="decimal" min="0" step="50" />
+        </div>
+        <div class="field">
+          <label for="c-met">Already met this year ($)</label>
+          <input id="c-met" type="number" inputmode="decimal" min="0" step="50" placeholder="0" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="c-coins">Coinsurance (%)</label>
+          <input id="c-coins" type="number" inputmode="decimal" min="0" max="100" step="1" />
+        </div>
+        <div class="field">
+          <label for="c-oop">OOP max ($) / met ($)</label>
+          <div style="display:flex;gap:.4rem">
+            <input id="c-oop" type="number" inputmode="decimal" min="0" step="100" placeholder="max" />
+            <input id="c-oop-met" type="number" inputmode="decimal" min="0" step="50" placeholder="met" />
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="side-set">
+      <legend>Marketplace plan</legend>
+      <div class="field">
+        <label for="m-premium">Monthly premium after any tax credit ($)</label>
+        <input id="m-premium" type="number" inputmode="decimal" min="0" step="1" />
+        <span class="hint">Get the subsidized figure from HealthCare.gov's own estimate, not the sticker price.</span>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="m-deductible">Deductible ($)</label>
+          <input id="m-deductible" type="number" inputmode="decimal" min="0" step="50" />
+        </div>
+        <div class="field">
+          <label for="m-coins">Coinsurance (%)</label>
+          <input id="m-coins" type="number" inputmode="decimal" min="0" max="100" step="1" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="m-oop">Out-of-pocket max ($)</label>
+        <input id="m-oop" type="number" inputmode="decimal" min="0" step="100" />
+      </div>
+    </fieldset>
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Compare</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <div class="result" id="result" hidden>
+      <div class="table-scroll">
+        <table id="result-table"></table>
+      </div>
+      <p style="margin:.6rem 0 0;font-size:.88rem;color:var(--text-muted)" id="note"></p>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Runs in your browser. Nothing you enter is sent or stored.
+    </p>
+  </form>
+
+  <h2>The deductible-reset effect</h2>
+  <p>
+    This is the part people miss. If you have already met most of your deductible this
+    year, COBRA preserves that progress - your plan, your accumulators, unchanged. A new
+    marketplace plan starts you at zero, and a plan year that starts mid-year still
+    usually resets again in January. When significant care is coming, that reset can
+    outweigh months of premium savings, and this calculator makes the effect visible
+    instead of leaving it as a hunch.
+  </p>
+
+  <h2>Facts worth knowing while you decide</h2>
+  <ul>
+    <li>
+      <strong>You have at least 60 days to elect COBRA</strong> from the later of the
+      notice date or coverage loss, and election is retroactive to the day coverage
+      ended - so you can wait, stay covered in hindsight if something happens, and pay
+      only if you elect.
+    </li>
+    <li>
+      <strong>Losing job coverage opens a marketplace special enrollment period</strong>,
+      also generally 60 days. The two windows run at the same time, which is exactly
+      what makes the comparison worth running now rather than later.
+    </li>
+    <li>
+      <strong>Premium tax credits depend on your income estimate</strong> for the year,
+      including the months you were employed. Run HealthCare.gov's estimator with real
+      numbers before trusting any sticker premium.
+    </li>
+    <li>
+      <strong>Networks differ.</strong> COBRA keeps your exact network; a marketplace
+      plan may not include your current doctors. Check before you compare on price -
+      our <a href="/guides/in-network-vs-out-of-network/">network guide</a> covers how
+      to verify properly.
+    </li>
+  </ul>
+
+  <Callout tone="warn" title="Arithmetic, not advice">
+    <p style="margin:0">
+      This page computes totals from the numbers you enter. It does not know your
+      health, your family's plans, your state's rules, or your tax situation, and it
+      does not recommend either option. The full decision context is in our guide on
+      <a href="/guides/cobra-vs-marketplace/">COBRA vs. the marketplace</a>, and a
+      benefits counselor or navigator (free through HealthCare.gov) can walk through
+      your specific case.
+    </p>
+  </Callout>
+</Tool>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const num = (id: string, fallback = NaN) => {
+    const v = parseFloat($(id).value);
+    return isFinite(v) && v >= 0 ? v : fallback;
+  };
+  const money = (v: number) =>
+    v.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+  function share(care: number, deductibleLeft: number, coins: number, oopLeft: number): number {
+    const d = Math.min(care, deductibleLeft);
+    const c = Math.max(0, care - d) * (coins / 100);
+    return Math.min(d + c, oopLeft);
+  }
+
+  document.getElementById('calc')!.addEventListener('click', () => {
+    const result = document.getElementById('result')!;
+    const months = Math.min(18, Math.max(1, num('months', 6)));
+    const care = num('care', 0) || 0;
+
+    const cobra = {
+      premium: num('cobra-premium'),
+      deductible: num('c-deductible'),
+      met: num('c-met', 0) || 0,
+      coins: num('c-coins'),
+      oop: num('c-oop'),
+      oopMet: num('c-oop-met', 0) || 0,
+    };
+    const mkt = {
+      premium: num('m-premium'),
+      deductible: num('m-deductible'),
+      coins: num('m-coins'),
+      oop: num('m-oop'),
+    };
+
+    if (![cobra.premium, cobra.deductible, cobra.coins, cobra.oop, mkt.premium, mkt.deductible, mkt.coins, mkt.oop].every(isFinite)) {
+      result.hidden = true;
+      return;
+    }
+
+    const cobraShare = share(care, Math.max(0, cobra.deductible - cobra.met), cobra.coins, Math.max(0, cobra.oop - cobra.oopMet));
+    const mktShare = share(care, mkt.deductible, mkt.coins, mkt.oop);
+
+    const rows = [
+      ['Premiums for ' + months + ' months', cobra.premium * months, mkt.premium * months],
+      ['Your share of ' + money(care) + ' of care', cobraShare, mktShare],
+      ['Total for the period', cobra.premium * months + cobraShare, mkt.premium * months + mktShare],
+    ];
+
+    const table = document.getElementById('result-table')!;
+    table.innerHTML =
+      '<thead><tr><th></th><th>COBRA</th><th>Marketplace</th></tr></thead><tbody>' +
+      rows
+        .map(([label, a, b]) => {
+          const bold = label.toString().startsWith('Total');
+          return `<tr${bold ? ' style="font-weight:700"' : ''}><td>${label}</td><td>${money(a as number)}</td><td>${money(b as number)}</td></tr>`;
+        })
+        .join('') +
+      '</tbody>';
+
+    const diff = cobra.premium * months + cobraShare - (mkt.premium * months + mktShare);
+    document.getElementById('note')!.textContent =
+      diff === 0
+        ? 'The two come out even on these numbers.'
+        : `On these numbers, the ${diff > 0 ? 'marketplace plan' : 'COBRA'} side totals ${money(Math.abs(diff))} less over ${months} months. The totals shift with your care estimate - try a low and a high one.`;
+    result.hidden = false;
+  });
+
+  (document.getElementById('cvm-form') as HTMLFormElement).addEventListener('reset', () =>
+    setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
+  );
+</script>
+
+<style>
+  .side-set {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1.1rem 0.25rem;
+    margin: 0 0 1rem;
+  }
+  .side-set legend {
+    padding: 0 0.45rem;
+    font-weight: 650;
+    font-size: 0.88rem;
+  }
+</style>

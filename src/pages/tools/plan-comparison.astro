@@ -1,0 +1,211 @@
+---
+import Tool from '../../layouts/Tool.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Tool
+  title="Health Plan Comparison Calculator"
+  description="Compare up to three health plans side by side: total yearly cost at your expected level of care, best case, and worst case. Arithmetic only, in your browser."
+  h1="Plan comparison calculator"
+  lede="Premiums are what gets advertised; totals are what you pay. Enter each plan's numbers and your expected care, and see the real yearly cost side by side."
+>
+  <form class="tool" id="plan-form" autocomplete="off" slot="tool">
+    <div class="field">
+      <label for="expected">Expected care this year ($, allowed amounts)</label>
+      <input id="expected" type="number" inputmode="decimal" min="0" step="100" placeholder="3000" />
+      <span class="hint">
+        Your best estimate of covered, in-network care for the year. Last year's total
+        from your EOBs is the usual starting point. Use 0 for a no-care year.
+      </span>
+    </div>
+
+    {
+      [1, 2, 3].map((n) => (
+        <fieldset class="plan-set">
+          <legend>Plan {n}{n === 3 ? ' (optional)' : ''}</legend>
+          <div class="field">
+            <label for={`name-${n}`}>Name</label>
+            <input id={`name-${n}`} type="text" placeholder={`Plan ${n}`} data-plan={n} data-field="name" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for={`premium-${n}`}>Monthly premium ($)</label>
+              <input id={`premium-${n}`} type="number" inputmode="decimal" min="0" step="1" data-plan={n} data-field="premium" />
+            </div>
+            <div class="field">
+              <label for={`deductible-${n}`}>Deductible ($)</label>
+              <input id={`deductible-${n}`} type="number" inputmode="decimal" min="0" step="50" data-plan={n} data-field="deductible" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for={`coins-${n}`}>Coinsurance (%)</label>
+              <input id={`coins-${n}`} type="number" inputmode="decimal" min="0" max="100" step="1" data-plan={n} data-field="coins" />
+            </div>
+            <div class="field">
+              <label for={`oop-${n}`}>Out-of-pocket max ($)</label>
+              <input id={`oop-${n}`} type="number" inputmode="decimal" min="0" step="100" data-plan={n} data-field="oop" />
+            </div>
+          </div>
+          <div class="field">
+            <label for={`employer-${n}`}>Employer HSA/HRA contribution ($/yr, optional)</label>
+            <input id={`employer-${n}`} type="number" inputmode="decimal" min="0" step="50" data-plan={n} data-field="employer" />
+          </div>
+        </fieldset>
+      ))
+    }
+
+    <div class="tool-actions">
+      <button class="btn" type="button" id="calc">Compare</button>
+      <button class="btn btn-ghost" type="reset">Clear</button>
+    </div>
+
+    <p style="margin:1rem 0 0;font-size:.82rem;color:var(--text-muted)">
+      Runs in your browser. Your plan details are never sent or stored.
+    </p>
+  </form>
+
+  <div class="result" id="result" hidden style="margin-top:0">
+    <p style="margin:0 0 .5rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700">
+      Side by side
+    </p>
+    <div class="table-scroll">
+      <table id="result-table"></table>
+    </div>
+    <p style="margin:.75rem 0 0;font-size:.88rem;color:var(--text-muted)">
+      "At your estimate" applies each plan's deductible and coinsurance to the care
+      amount you entered, capped by its out-of-pocket maximum, plus 12 months of
+      premiums, minus any employer contribution.
+    </p>
+  </div>
+
+  <h2>What the three rows mean</h2>
+  <ul>
+    <li>
+      <strong>Best case</strong> - you use almost no care: 12 months of premiums, minus
+      any employer account contribution.
+    </li>
+    <li>
+      <strong>At your estimate</strong> - premiums plus your share of the care amount
+      you entered, computed the same way your insurer would:
+      <a href="/guides/deductible-copay-coinsurance/">deductible first, then coinsurance,
+      capped at the out-of-pocket maximum</a>.
+    </li>
+    <li>
+      <strong>Worst case</strong> - premiums plus the full out-of-pocket maximum. This
+      is the number that matters if the year goes badly, and comparing plans on it is
+      the single most clarifying thing this page does.
+    </li>
+  </ul>
+
+  <Callout tone="warn" title="The numbers are half the decision">
+    <p style="margin:0 0 .6rem">
+      This page compares arithmetic. It cannot see whether your doctors are in each
+      plan's network, whether your prescriptions are on each formulary, or whether a
+      plan requires referrals - and any one of those can outweigh a premium difference.
+      Check each before deciding: our guides on
+      <a href="/guides/in-network-vs-out-of-network/">networks</a> and the
+      <a href="/guides/hsa-fsa-hra/">account types</a> cover how.
+    </p>
+    <p style="margin:0">
+      Copays complicate the math: plans that use flat copays instead of coinsurance for
+      routine visits will run slightly cheaper at low usage than this estimate shows.
+      The comparison stays fair as long as you treat it as approximate for all plans.
+    </p>
+  </Callout>
+
+  <h2>Where to find each number</h2>
+  <p>
+    Every plan must publish a Summary of Benefits and Coverage - a standardized document
+    with the deductible, out-of-pocket maximum, and coinsurance on page one, formatted
+    identically across insurers precisely so you can compare. Premiums come from your
+    enrollment portal or offer letter.
+  </p>
+</Tool>
+
+<script>
+  interface Plan {
+    name: string;
+    premium: number;
+    deductible: number;
+    coins: number;
+    oop: number;
+    employer: number;
+  }
+
+  const money = (v: number) =>
+    v.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+  function readPlan(n: number): Plan | null {
+    const get = (field: string) =>
+      (document.querySelector(`[data-plan="${n}"][data-field="${field}"]`) as HTMLInputElement).value;
+    const premium = parseFloat(get('premium'));
+    const deductible = parseFloat(get('deductible'));
+    const coins = parseFloat(get('coins'));
+    const oop = parseFloat(get('oop'));
+    if (![premium, deductible, coins, oop].every((v) => isFinite(v) && v >= 0)) return null;
+    return {
+      name: get('name').trim() || `Plan ${n}`,
+      premium,
+      deductible,
+      coins,
+      oop,
+      employer: Math.max(0, parseFloat(get('employer')) || 0),
+    };
+  }
+
+  function shareOfCare(plan: Plan, care: number): number {
+    const deductiblePortion = Math.min(care, plan.deductible);
+    const coinsurancePortion = Math.max(0, care - deductiblePortion) * (plan.coins / 100);
+    return Math.min(deductiblePortion + coinsurancePortion, plan.oop);
+  }
+
+  document.getElementById('calc')!.addEventListener('click', () => {
+    const result = document.getElementById('result')!;
+    const care = Math.max(0, parseFloat((document.getElementById('expected') as HTMLInputElement).value) || 0);
+    const plans = [1, 2, 3].map(readPlan).filter((p): p is Plan => p !== null);
+    if (plans.length < 2) {
+      result.hidden = true;
+      return;
+    }
+
+    const rows = [
+      { label: 'Annual premiums', value: (p: Plan) => p.premium * 12 },
+      { label: 'Best case (no care)', value: (p: Plan) => p.premium * 12 - p.employer },
+      { label: `At your estimate (${money(care)} of care)`, value: (p: Plan) => p.premium * 12 + shareOfCare(p, care) - p.employer },
+      { label: 'Worst case (out-of-pocket max reached)', value: (p: Plan) => p.premium * 12 + p.oop - p.employer },
+    ];
+
+    const table = document.getElementById('result-table')!;
+    table.innerHTML =
+      `<thead><tr><th></th>${plans.map((p) => `<th>${p.name.replace(/</g, '&lt;')}</th>`).join('')}</tr></thead>` +
+      `<tbody>${rows
+        .map((r) => {
+          const values = plans.map((p) => r.value(p));
+          const min = Math.min(...values);
+          return `<tr><td>${r.label}</td>${values
+            .map((v) => `<td${v === min && values.filter((x) => x === min).length < plans.length ? ' style="font-weight:700;color:var(--accent)"' : ''}>${money(v)}</td>`)
+            .join('')}</tr>`;
+        })
+        .join('')}</tbody>`;
+    result.hidden = false;
+  });
+
+  (document.getElementById('plan-form') as HTMLFormElement).addEventListener('reset', () =>
+    setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
+  );
+</script>
+
+<style>
+  .plan-set {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1.1rem 0.25rem;
+    margin: 0 0 1rem;
+  }
+  .plan-set legend {
+    padding: 0 0.45rem;
+    font-weight: 650;
+    font-size: 0.88rem;
+  }
+</style>

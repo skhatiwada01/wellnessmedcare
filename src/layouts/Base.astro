@@ -82,6 +82,7 @@ const orgLd = {
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Wellness Med Care" href="/rss.xml" />
 
     <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
     {jsonLd.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
@@ -94,5 +95,16 @@ const orgLd = {
     </main>
     <Footer />
     <Analytics />
+    <script is:inline>
+      // Tool forms have no action on purpose - nothing typed may leave the page.
+      // This also blocks implicit Enter-key submission, which would otherwise put
+      // typed values into the URL querystring (and server logs).
+      document.addEventListener('submit', function (e) {
+        var form = e.target;
+        if (form instanceof HTMLFormElement && !form.getAttribute('action')) {
+          e.preventDefault();
+        }
+      });
+    </script>
   </body>
 </html>

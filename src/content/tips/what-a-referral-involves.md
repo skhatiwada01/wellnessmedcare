@@ -18,7 +18,7 @@ People use the words interchangeably. Your insurer does not.
 | Who requires it | Your insurance plan (common with HMO plans, the kind built around one primary care doctor who coordinates everything) | Your insurance plan |
 | Without it | The specialist visit may not be covered | The service may not be covered |
 
-You can need one, both, or neither. HMO plans usually require a referral on file before a specialist visit is covered. Most PPO plans do not, but expensive tests the specialist orders may still need prior authorization. One call to your insurer settles it:
+You can need one, both, or neither. HMO plans usually require a referral on file before a specialist visit is covered. Most PPO plans do not, but expensive tests the specialist orders may still need prior authorization. One call to your insurer answers it - note the date and reference number, since a phone answer is only as good as your record of it:
 
 > "Does my plan require a referral on file to see a [specialty]? Does the visit itself need prior authorization?"
 

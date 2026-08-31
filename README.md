@@ -113,25 +113,17 @@ Nepali are built. `PUBLISHED_LOCALES` in `src/i18n/config.ts` currently contains
 To publish a locale: translate the content, have a fluent speaker review it, then add the
 code to `PUBLISHED_LOCALES`. Do not skip the review step - see CONTENT.md.
 
-**Current inventory** (August 2026): 150 pages. 98 lab tests across 13 panels, 57
-printable trackers in 8 categories, 19 tips, 15 letter templates, 9 calculators, a
-55-term glossary, and 10 billing guides.
+**Current inventory** (August 2026): 184 pages. 112 lab tests across 15 panels, 57
+printable trackers in 8 categories, 25 tips, 15 letter templates, 11 calculators, a
+79-term glossary, 19 billing guides, a scenario hub at /start/, site search, and an
+RSS feed at /rss.xml. See RECOMMENDATIONS.md for the prioritized backlog.
 
 **Content roadmap**
 
-*Lab tests to add*: lipase/amylase, ammonia, LDH, haptoglobin, direct/indirect bilirubin
-split, blood type, celiac genetic tests, therapeutic drug levels, and an "office tests"
-panel for rapid strep/flu/COVID.
-
-*Guides to add*: preventive vs. diagnostic coding (why your free physical generated a
-bill), how to vet a doctor, prior authorization, insurance changing mid-treatment,
-reading your Summary of Benefits and Coverage, ER vs. urgent care on cost only, medical
-debt and credit reports, COBRA vs. marketplace after job loss, open enrollment worksheet.
-
-*Tools to consider*: plan comparison worksheet, COBRA vs. marketplace cost comparison,
-and the hospital price lookup built on CMS machine-readable files - fully scoped in
-[docs/PRICE-LOOKUP-SCOPE.md](docs/PRICE-LOOKUP-SCOPE.md), research notes in
-[docs/research/](docs/research/).
+The August 2026 roadmap batch (9 guides, 14 lab tests, 24 glossary terms, 6 tips, the
+plan-comparison and COBRA calculators, /start/, RSS) is done. What remains is in
+[RECOMMENDATIONS.md](RECOMMENDATIONS.md), headlined by the hospital price lookup -
+fully scoped in [docs/PRICE-LOOKUP-SCOPE.md](docs/PRICE-LOOKUP-SCOPE.md).
 
 ## Revenue
 

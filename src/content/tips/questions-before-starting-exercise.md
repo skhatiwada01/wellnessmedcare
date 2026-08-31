@@ -6,7 +6,7 @@ order: 2
 updated: 2026-08-23
 ---
 
-Most healthy adults do not need medical clearance before becoming more active gradually. But "most" is not everyone, and the people most likely to benefit from moving more are often the ones with the most reason to ask first.
+Public-health guidance says most healthy adults can build up activity gradually without a medical visit first - but this page is not that clearance, the list below is not exhaustive, and the people most likely to benefit from moving more are often the ones with the most reason to ask first. When in doubt, asking costs one appointment.
 
 This page is about the asking. What you should actually do is a conversation with someone who can examine you.
 

@@ -79,13 +79,13 @@ If you are offered either, it affects your marketplace subsidy eligibility, and 
 
 ## Choosing, in practice
 
-**If you have an HDHP, fund the HSA first.** The triple tax advantage, the permanent rollover, and the portability make it the best of the three by a wide margin. At minimum, contribute enough to cover your deductible.
+**The HSA has the strongest properties of the three.** The triple tax advantage, the permanent rollover, and the portability are why, for people with HDHP coverage, it is usually the account a benefits counselor or tax professional looks at first. How much to put where depends on your cash flow, your expected care, and your taxes - which is exactly the question those professionals exist to answer.
 
 **You cannot have both a general-purpose FSA and an HSA.** They conflict. A *limited-purpose* FSA - dental and vision only - can coexist with an HSA, and pairing them is a reasonable strategy if your employer offers it.
 
-**If you do not have an HDHP, the FSA is your tool.** Estimate conservatively. Forfeiting money to avoid the discomfort of estimating is a common and expensive habit.
+**Without an HDHP, the FSA is the only one of the three you can fund yourself.** Its use-it-or-lose-it rule is why conservative estimates are the norm: money forfeited at year end is the common failure mode of this account.
 
-**Whatever you have, spend it on things that count.** Qualified medical expenses are broader than most people assume - dental, vision, prescriptions, and a long list of over-the-counter items among them. IRS Publication 502 has the authoritative list, and it is worth ten minutes in November.
+**Qualified expenses are broader than most account holders realize.** They are broader than most people assume - dental, vision, prescriptions, and a long list of over-the-counter items among them. IRS Publication 502 has the authoritative list, and it is worth ten minutes in November.
 
 ## The connection to everything else
 

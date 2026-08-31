@@ -21,7 +21,7 @@ But negotiation is the *last* step, not the first. Everything before it makes th
 
 1. **[Get the itemized bill and check it](/guides/itemized-bill-errors/).** Never negotiate a number you have not verified. Errors are common, and finding one changes the conversation from asking a favor to correcting a mistake.
 2. **[Exhaust the insurance side](/guides/appeal-a-denied-claim/).** If a denial is appealable, appeal it. Negotiating a balance that should not exist is expensive.
-3. **[Apply for financial assistance](/guides/hospital-financial-assistance/).** This has federal rules behind it at nonprofit hospitals. It is a right, not a request.
+3. **[Apply for financial assistance](/guides/hospital-financial-assistance/).** Nonprofit hospitals are required by federal tax rules to maintain and publicize an assistance policy - applying is using a program that must exist, not asking a favor.
 4. **Then negotiate what is left.**
 
 Skipping to step four is how people end up with a payment plan on a balance that was never correct.

@@ -39,7 +39,7 @@ Anything prescribed goes wherever the system says your pharmacy is, and the syst
 
 ## Settle the cost question before, not after
 
-Telehealth coverage varies by plan and keeps changing. Some plans cover video visits like office visits, some cover them differently, and some treat your own doctor differently from a telehealth-only service. One call to your insurer settles it:
+Telehealth coverage varies by plan and keeps changing. Some plans cover video visits like office visits, some cover them differently, and some treat your own doctor differently from a telehealth-only service. One call to your insurer answers it - note the date and reference number, since a phone answer is only as good as your record of it:
 
 > "Is a telehealth visit with my own doctor covered like an office visit? Same copay, same deductible treatment?"
 

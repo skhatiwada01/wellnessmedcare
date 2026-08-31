@@ -29,7 +29,7 @@ The most important sentence in that list: **your premium never counts toward any
 Meet a plan with a $2,000 deductible, 20% coinsurance, a $30 primary care copay, and a $7,000 out-of-pocket maximum. Everything below is in-network.
 
 **January - annual physical, billed $310.**
-You pay $0. Preventive services are covered without cost sharing at in-network providers, and they do not touch the deductible. *Deductible progress: $0.*
+You pay $0. The ACA-listed preventive services are covered without cost sharing at in-network providers on non-grandfathered plans, and they do not touch the deductible. The catch: a checkup that turns into discussing a specific problem can be billed as two visits - see [why a free physical can generate a bill](/guides/preventive-vs-diagnostic/). *Deductible progress: $0.*
 
 **March - sore knee, primary care visit.**
 You pay the $30 copay. On many plans, copays do not count toward the deductible but do count toward the out-of-pocket maximum. Check your plan documents; this varies more than anything else on this page. *Deductible progress: $0. Out-of-pocket: $30.*

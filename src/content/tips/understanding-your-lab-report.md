@@ -47,7 +47,7 @@ If the result worries you, three things help:
 
 ## What not to do
 
-Do not change or stop a medication based on a lab value you read yourself. Do not start a supplement to correct a number. Do not book an unnecessary emergency visit over a flagged value with no symptoms - and equally, do not ignore actual symptoms because a number looked fine.
+Do not change or stop a medication based on a lab value you read yourself, and do not start a supplement to correct a number. And if either a value or a symptom is worrying you, the how-urgent question belongs to your clinician's office or nurse line - that judgment is theirs to make, not this page's and not the flag column's.
 
 The report is one input. The person who ordered it has the rest.
 

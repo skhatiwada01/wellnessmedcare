@@ -59,7 +59,7 @@ There is usually a deadline - often around 240 days from the first post-discharg
 
 This is the mistake that costs people the most money.
 
-A payment plan makes a large bill feel manageable, so it is what the billing office offers first. But a payment plan does not reduce what you owe - it just spreads it out. Applying for financial assistance may **eliminate** part of the balance, and at minimum it caps what you can be charged at the insured rate rather than the list rate.
+A payment plan makes a large bill feel manageable, so it is what the billing office offers first. But a payment plan does not reduce what you owe - it just spreads it out. Applying for financial assistance can reduce or even eliminate part of the balance, and for patients the hospital determines eligible under its policy, federal rules cap the charge at the insured rate rather than the list rate. None of that is guaranteed - eligibility depends on the hospital's own criteria - but a payment plan signed first forecloses the question.
 
 Apply first. Set up a payment plan afterward, on whatever is actually left.
 

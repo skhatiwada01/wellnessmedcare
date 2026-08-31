@@ -341,4 +341,152 @@ export const GLOSSARY: Term[] = [
     definition:
       'The process a plan uses to decide whether care is covered, either before treatment (prospective), during it (concurrent), or after it (retrospective).',
   },
+
+  // ---------- expansion batch 2 ----------
+  {
+    term: "Advance Beneficiary Notice (ABN)",
+    aka: ["ABN", "waiver of liability"],
+    definition:
+      "A form Medicare providers hand you before delivering a service Medicare is expected to deny. Signing it means you agree to pay out of pocket if Medicare refuses, so it is a cost decision, not a formality.",
+  },
+  {
+    term: "Capitation",
+    definition:
+      "A payment model where an insurer pays a doctor or medical group a fixed amount per patient per month, whether you show up or not. It rewards keeping spending down rather than doing more.",
+  },
+  {
+    term: "Care coordinator",
+    definition:
+      "A person, usually a nurse or social worker employed by a hospital or insurer, who arranges appointments, referrals, and paperwork across your providers. When the insurer employs them, part of the job is managing the plan's costs, not just your convenience.",
+  },
+  {
+    term: "Claim adjustment reason code",
+    aka: ["CARC", "remark code"],
+    definition:
+      "A standardized code on your EOB or remittance that explains why the insurer paid less than billed, or nothing. Codes like CO-45 and PR-1 look like noise, but every one has a published meaning you can look up.",
+    guide: "/guides/read-your-eob/",
+  },
+  {
+    term: "Concierge medicine",
+    definition:
+      "A practice model where you pay a doctor an annual or monthly membership fee for faster access and longer visits, on top of whatever your insurance is billed. The fee buys access, not covered services, so insurance almost never reimburses it.",
+  },
+  {
+    term: "Copay card",
+    aka: ["manufacturer coupon", "copay assistance"],
+    definition:
+      "A discount card from a drug manufacturer that covers some or all of your copay for a specific brand-name drug. It exists to keep you on the expensive brand, and federal rules bar Medicare and Medicaid patients from using one.",
+    guide: "/guides/deductible-copay-coinsurance/",
+  },
+  {
+    term: "Copay accumulator",
+    aka: ["accumulator adjustment program"],
+    definition:
+      "An insurer policy that accepts a manufacturer copay card's money but refuses to count it toward your deductible or out-of-pocket maximum. The card gets spent, and on paper you have paid nothing.",
+    guide: "/guides/deductible-copay-coinsurance/",
+  },
+  {
+    term: "Credentialing",
+    definition:
+      "The insurer's process of verifying a provider's license, training, and history before letting them bill as in-network. It can take months, so a new doctor at an in-network practice may still bill as out-of-network until it finishes.",
+    guide: "/guides/in-network-vs-out-of-network/",
+  },
+  {
+    term: "Direct primary care",
+    aka: ["DPC"],
+    definition:
+      "A membership model where you pay a primary care practice a flat monthly fee and insurance is never billed. It covers primary care only, so you still need insurance for hospitals, specialists, and everything else.",
+  },
+  {
+    term: "Dual eligible",
+    definition:
+      "A person enrolled in both Medicare and Medicaid at the same time. Medicare pays first, Medicaid picks up much of what is left, and special plans exist just for this group.",
+  },
+  {
+    term: "Embedded deductible",
+    definition:
+      "In a family plan, a per-person deductible that sits inside the family deductible, so coverage starts for one family member before the whole family total is met. The alternative is an aggregate deductible, where nobody's coverage starts until the entire family amount is paid.",
+    guide: "/guides/deductible-copay-coinsurance/",
+  },
+  {
+    term: "Facility fee",
+    definition:
+      "A separate charge for the building itself that hospital-owned clinics and outpatient departments add on top of the doctor's fee. The same visit at an independent practice usually carries no facility fee, which is a big reason hospital-owned offices cost more.",
+    guide: "/guides/what-things-actually-cost/",
+  },
+  {
+    term: "Formulary tier",
+    definition:
+      "The pricing level your plan assigns to each covered drug, typically tier 1 for cheap generics up through tier 4 or 5 for specialty drugs. The tier, not the drug's actual price, sets what you pay at the pharmacy counter.",
+  },
+  {
+    term: "Guarantor",
+    definition:
+      "The person legally responsible for paying a medical bill, which is whoever signed the financial paperwork, not necessarily the patient. Parents are typically the guarantor on their children's bills.",
+  },
+  {
+    term: "Medicare Advantage",
+    aka: ["Part C", "Medicare Part C"],
+    definition:
+      "Private insurance plans that replace Original Medicare, usually adding drug or dental benefits in exchange for a restricted network and prior authorization requirements. You are still in Medicare, but a private company decides what gets approved.",
+  },
+  {
+    term: "Medigap",
+    aka: ["Medicare Supplement"],
+    definition:
+      "A private policy that pays the deductibles and coinsurance Original Medicare leaves behind. It works only alongside Original Medicare, so you cannot pair it with a Medicare Advantage plan.",
+  },
+  {
+    term: "Medical loss ratio",
+    aka: ["MLR", "80/20 rule"],
+    definition:
+      "The share of premium dollars an insurer must spend on actual care and quality improvement, set by federal law at 80 percent for individual and small-group plans and 85 percent for large groups. Spend less than that on care, and the insurer owes rebates to policyholders.",
+  },
+  {
+    term: "Network adequacy",
+    definition:
+      "Legal standards requiring an insurance network to have enough providers within reasonable time and distance of its members. When the network cannot offer an in-network option, many states and plan types require covering an out-of-network provider at in-network rates.",
+    guide: "/guides/in-network-vs-out-of-network/",
+  },
+  {
+    term: "Observation status",
+    aka: ["outpatient observation"],
+    definition:
+      "A billing classification where you occupy a hospital bed, sometimes for days, but are technically an outpatient rather than admitted. It changes what you owe, and for Medicare patients it can eliminate coverage for follow-up skilled nursing care.",
+    guide: "/guides/appeal-a-denied-claim/",
+  },
+  {
+    term: "Place of service code",
+    aka: ["POS code"],
+    definition:
+      "A two-digit code on every claim telling the insurer where the service happened, like 11 for a doctor's office or 22 for hospital outpatient. The code changes what gets paid, which is why a visit billed with the wrong one can produce a surprise bill.",
+    guide: "/guides/itemized-bill-errors/",
+  },
+  {
+    term: "Prompt-pay discount",
+    definition:
+      "A price cut, often 10 to 30 percent, that a provider offers if you pay quickly or on the spot. You usually have to ask for it, and it is worth comparing against what you would owe after insurance processes the claim.",
+    guide: "/guides/negotiate-a-medical-bill/",
+  },
+  {
+    term: "Self-funded plan",
+    aka: ["self-insured plan"],
+    definition:
+      "An employer health plan where the employer pays claims with its own money and an insurance company only handles the paperwork, unlike a fully-insured plan where the insurer takes the risk. The distinction matters because self-funded plans answer to federal ERISA law, not your state insurance department, so state protections and the state regulator often do not apply.",
+    guide: "/guides/appeal-a-denied-claim/",
+  },
+  {
+    term: "Step therapy",
+    aka: ["fail first"],
+    definition:
+      "An insurer rule requiring you to try and fail cheaper drugs before it will cover the one that was prescribed. Plans generally must offer an exception process, and a denied exception can be appealed like any other denial.",
+    guide: "/guides/appeal-a-denied-claim/",
+  },
+  {
+    term: "Third-party administrator",
+    aka: ["TPA"],
+    definition:
+      "A company hired to process claims and run day-to-day operations for a self-funded employer plan without taking on any insurance risk. The big-name insurer on your card is often just the TPA, while your employer's money actually pays the claims.",
+    guide: "/guides/appeal-a-denied-claim/",
+  },
 ];

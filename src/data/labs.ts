@@ -86,6 +86,14 @@ export const PANELS = {
     label: 'Infection Tests',
     blurb: 'Tests for specific infections, and what positive and negative patterns generally mean.',
   },
+  drugs: {
+    label: 'Medication Level Tests',
+    blurb: 'Blood levels of medications whose dose is tuned to the individual - measured, never self-interpreted.',
+  },
+  office: {
+    label: 'Rapid Office Tests',
+    blurb: 'The swab-and-wait tests done during a visit, and what their results generally mean.',
+  },
   vitals: {
     label: 'Vital Signs',
     blurb: 'Not lab tests, but the numbers taken at every visit - and what each one actually measures.',
@@ -422,7 +430,7 @@ export const LAB_TESTS: LabTest[] = [
     higher:
       'Higher LDL is associated at a population level with greater risk of plaque building up in arteries over time. It is influenced by diet, genetics including inherited conditions, thyroid function, kidney and liver conditions, and some medications.',
     lower:
-      'Lower LDL is generally the treatment goal. Very low values can occur with some inherited conditions, liver disease, and malnutrition.',
+      'Lower values are the direction cholesterol-lowering treatment generally aims for at a population level. Very low values can occur with some inherited conditions, liver disease, and malnutrition.',
     affectedBy: [
       'Whether you fasted, which affects calculated LDL more than measured LDL',
       'Recent illness, which can temporarily lower it',
@@ -827,7 +835,7 @@ export const LAB_TESTS: LabTest[] = [
     whyOrdered:
       "It comes with every complete blood count with differential. Clinicians pay attention to it during and after infections, when evaluating immune conditions, and while monitoring certain medications.",
     higher:
-      "Broadly associated with certain infections known for raising lymphocytes - infectious mononucleosis and whooping cough are the classic examples - and with recovery after an illness. Many everyday viral illnesses temporarily lower lymphocytes instead, so the direction alone says little, and with whooping cough. Children normally run higher counts than adults. A persistent, unexplained elevation is what prompts further evaluation rather than a single high reading.",
+      "Broadly associated with certain infections known for raising lymphocytes - infectious mononucleosis and whooping cough are the classic examples - and with recovery after an illness. Many everyday viral illnesses temporarily lower lymphocytes instead, so the direction alone says little. Children normally run higher counts than adults. A persistent, unexplained elevation is what prompts further evaluation rather than a single high reading.",
     lower:
       "Broadly associated with acute stress or acute illness, corticosteroid medicines, and some immune conditions. A temporary dip during and shortly after a common infection is frequent and usually resolves on its own.",
     affectedBy: [
@@ -2691,6 +2699,392 @@ export const LAB_TESTS: LabTest[] = [
       "Was my rate counted over a full minute, or estimated from a shorter count?",
       "What changes in breathing pattern, beyond the number itself, would be worth reporting?",
       "Could any of my medicines be slowing or speeding my breathing?",
+    ],
+  },
+
+  // ---------- expansion batch 2 ----------
+  {
+    slug: "lipase",
+    name: "Lipase",
+    aka: ["Serum lipase", "LPS"],
+    panel: "cmp",
+    short:
+      "An enzyme made mainly by the pancreas to digest fat, checked when the pancreas may be inflamed.",
+    measures:
+      "The level of lipase, an enzyme the pancreas makes to break down dietary fat. Most of it normally stays inside the pancreas, so the blood level rises when the gland is inflamed or injured.",
+    whyOrdered:
+      "It is the preferred blood test when inflammation of the pancreas is being considered, usually during a workup for abdominal pain. It is more specific to the pancreas than amylase and stays elevated longer, which is why many labs have replaced amylase with it.",
+    higher:
+      "Broadly associated with inflammation of the pancreas, blockage of the pancreatic duct such as by a gallstone, and reduced kidney function, which slows clearance of the enzyme. Modest elevations also occur in many abdominal conditions that have nothing to do with the pancreas, so the size of the rise and the clinical picture matter together.",
+    lower:
+      "A low lipase usually carries no significance on its own. Long-standing damage to the pancreas can reduce how much enzyme the gland produces.",
+    affectedBy: [
+      "Some common medications, including opioid pain relievers",
+      "Alcohol intake",
+      "Timing - the level rises within hours of pancreatic irritation and falls back over days",
+      "Recent endoscopic procedures involving the bile or pancreatic ducts",
+    ],
+    ask: [
+      "Was this ordered because of my symptoms, or as part of a broader panel?",
+      "How does this fit with my amylase result and any imaging?",
+      "Could any of my medications be raising this?",
+    ],
+  },
+  {
+    slug: "amylase",
+    name: "Amylase",
+    aka: ["Serum amylase", "AMY"],
+    panel: "cmp",
+    short:
+      "A digestion enzyme from the pancreas and salivary glands, historically used to assess the pancreas.",
+    measures:
+      "The level of amylase, an enzyme that breaks down starch. It comes from two main sources - the pancreas and the salivary glands - so a raised level can reflect either.",
+    whyOrdered:
+      "It is ordered alongside or instead of lipase when inflammation of the pancreas is being considered, and occasionally when a salivary gland problem is suspected. Many clinicians now lean on lipase instead because amylase is less specific to the pancreas.",
+    higher:
+      "Broadly associated with inflammation of the pancreas, salivary gland conditions including mumps and blocked salivary ducts, reduced kidney function, and a range of other abdominal conditions. A harmless trait called macroamylasemia, where amylase binds to larger proteins and clears slowly, can also keep the level persistently raised without any disease.",
+    lower:
+      "A low amylase rarely means anything by itself. Long-standing damage to the pancreas can reduce its output of the enzyme.",
+    affectedBy: [
+      "Alcohol intake",
+      "Some common medications, including opioids",
+      "Vomiting, which can raise the salivary fraction",
+      "Recent dental work or salivary gland irritation",
+      "Pregnancy, which can raise it modestly",
+    ],
+    ask: [
+      "Does my lipase result agree with this one?",
+      "Could this be coming from the salivary glands rather than the pancreas?",
+      "If this stays elevated without symptoms, is macroamylasemia worth ruling out?",
+    ],
+  },
+  {
+    slug: "ldh",
+    name: "LDH (Lactate Dehydrogenase)",
+    aka: ["LD", "Lactic acid dehydrogenase"],
+    panel: "cmp",
+    short:
+      "An enzyme in almost every tissue, released into blood when cells are damaged or break down.",
+    measures:
+      "The level of lactate dehydrogenase, an enzyme involved in energy production that is present in nearly every cell in the body. Because cells release it when they are damaged or destroyed, the blood level works as a general gauge of cell turnover.",
+    whyOrdered:
+      "It is used as a broad marker of tissue damage, most often in workups for red cell breakdown (hemolysis), and to follow certain cancers and their treatment. It also gets measured on fluid samples, such as fluid drawn from around the lungs, to help characterize where the fluid came from.",
+    higher:
+      "Broadly associated with anything that damages cells: breakdown of red blood cells, liver disease, muscle injury, heart muscle injury, some infections, and some cancers with rapid cell turnover. The test is deliberately non-specific - other results and the clinical picture point at which tissue is the source.",
+    lower:
+      "A low LDH is uncommon and usually has no clinical significance. Large doses of vitamin C have been reported to lower it.",
+    affectedBy: [
+      "Sample handling - red cells breaking open in the tube falsely raise it, one of the most common causes of an unexpected result",
+      "Strenuous exercise shortly before the draw",
+      "Delays in processing the sample",
+      "Intramuscular injections in the days before the draw",
+    ],
+    ask: [
+      "Could this be a sample-handling artifact rather than a real rise?",
+      "Which tissue do the other results point to as the source?",
+      "Is this value being followed over time for a specific reason?",
+    ],
+  },
+  {
+    slug: "ammonia",
+    name: "Ammonia",
+    aka: ["NH3", "Plasma ammonia"],
+    panel: "cmp",
+    short:
+      "A waste product of protein breakdown that a healthy liver clears almost completely.",
+    measures:
+      "The level of ammonia in blood. Ammonia is produced when the body and gut bacteria break down protein, and the liver normally converts it into urea for the kidneys to excrete, keeping the blood level low.",
+    whyOrdered:
+      "It is most often ordered when confusion or reduced alertness is being evaluated in someone with known liver disease. It is also used to monitor certain medications, valproate in particular, and in the workup of rare inherited disorders of protein metabolism, mostly in infants and children.",
+    higher:
+      "Broadly associated with advanced liver disease, conditions that shunt blood past the liver, gastrointestinal bleeding, certain medications including valproate, and rare inherited urea cycle disorders. It is also one of the values most often raised falsely by how the sample was collected and handled, so an unexpected result is frequently a laboratory artifact.",
+    lower:
+      "A low ammonia is not generally considered meaningful.",
+    affectedBy: [
+      "Sample handling - the tube needs to go on ice and be processed quickly, or the value climbs on the bench",
+      "A tight tourniquet or fist clenching during the draw",
+      "Strenuous exercise before the draw",
+      "Smoking shortly before the draw",
+      "A high-protein meal beforehand",
+    ],
+    ask: [
+      "Was the sample kept on ice and processed promptly?",
+      "Does this number match how I have actually been thinking and functioning?",
+      "Could a medication such as valproate be playing a role?",
+    ],
+  },
+  {
+    slug: "haptoglobin",
+    name: "Haptoglobin",
+    aka: ["Hp"],
+    panel: "cbc",
+    short:
+      "A protein that binds free hemoglobin - it falls when red blood cells break down early.",
+    measures:
+      "The level of haptoglobin, a protein made by the liver whose job is to bind hemoglobin released from destroyed red blood cells. Each bound complex is removed from circulation, so the level drops when red cells are being destroyed faster than usual.",
+    whyOrdered:
+      "It is a core part of the workup for hemolysis - red cells breaking down early - usually ordered alongside LDH, bilirubin, and a reticulocyte count when the cause of an anemia is being investigated. It is also checked when a reaction to a blood transfusion is suspected.",
+    higher:
+      "Broadly associated with inflammation and infection, because haptoglobin is an acute phase protein that rises whenever the body is inflamed, and with corticosteroid use. A raised value is rarely the finding of interest - the test is usually ordered to look for the opposite.",
+    lower:
+      "Broadly associated with hemolysis, where free hemoglobin consumes the available haptoglobin, and with liver disease, which reduces production. A small share of people inherit a low haptoglobin level without any disease behind it.",
+    affectedBy: [
+      "Recent inflammation or infection, which raises the level and can mask a fall",
+      "Corticosteroids",
+      "Estrogens, including oral contraceptive pills, which can lower it",
+      "A recent blood transfusion",
+    ],
+    ask: [
+      "What did the LDH, bilirubin, and reticulocyte count show alongside this?",
+      "Could recent inflammation be propping this value up and hiding a low result?",
+      "Is an inherited low level a possibility worth considering?",
+    ],
+  },
+  {
+    slug: "blood-type",
+    name: "Blood Type and Rh Factor",
+    aka: ["ABO and Rh typing", "Blood group"],
+    panel: "cbc",
+    short:
+      "Which ABO group (A, B, AB, or O) and Rh factor (positive or negative) your red cells carry.",
+    measures:
+      "Which inherited markers, called antigens, sit on the surface of the red blood cells - the A and B antigens that define the ABO group, and the RhD antigen that defines positive or negative status. These markers determine which donated blood the immune system will tolerate.",
+    whyOrdered:
+      "It is ordered before planned surgery and transfusions, at the start of prenatal care, and as part of blood donation. In pregnancy, Rh status matters because a difference between an Rh-negative parent and an Rh-positive fetus is something prenatal care routinely screens for and addresses.",
+    higher:
+      "This test reports a category, not a level. The possible results pair an ABO group (A, B, AB, or O) with an Rh status (positive or negative), giving eight common types. O negative red cells can generally be given to recipients of any type in an emergency, and people who are AB positive can generally receive red cells of any type - the origin of the terms universal donor and universal recipient.",
+    lower:
+      "No blood type is healthier than another. Rh-negative status carries practical relevance mainly in pregnancy and transfusion planning, both of which have standard, well-established protocols built around it.",
+    affectedBy: [
+      "A recent transfusion, which can temporarily complicate typing",
+      "A prior bone marrow or stem cell transplant, which can genuinely change a person's blood type",
+      "Pregnancy, which can affect the antibody screen usually run alongside the typing",
+      "Certain medications and conditions that interfere with the antibody screen rather than the type itself",
+    ],
+    ask: [
+      "Is my Rh status relevant to a current or planned pregnancy?",
+      "Was an antibody screen run with the typing, and did it find anything?",
+      "Does the hospital keep my type on file, and should I carry a record of it?",
+      "Is it true the hospital will re-check my type before any transfusion regardless of what I carry?",
+    ],
+  },
+  {
+    slug: "celiac-genetic-test",
+    name: "Celiac Genetic Test (HLA-DQ2 and DQ8)",
+    aka: ["HLA-DQ2/DQ8 typing", "Celiac HLA test"],
+    panel: "inflammation",
+    short:
+      "A gene test showing whether celiac disease is genetically possible - not whether it is present.",
+    measures:
+      "Whether the genes HLA-DQ2 and HLA-DQ8 are present. These genes encode immune system proteins that celiac disease requires in order to develop - essentially all people with celiac carry one of them.",
+    whyOrdered:
+      "It is used to help rule celiac out: when antibody test results are ambiguous, when a gluten-free diet was started before testing and antibody tests can no longer be trusted, or in close relatives of someone with celiac. Unlike the antibody tests, it works regardless of what the person is eating.",
+    higher:
+      "A positive result generally means only that celiac disease is genetically possible. Roughly a third of the general population carries DQ2 or DQ8, and the large majority of carriers never develop celiac disease. On its own, a positive result diagnoses nothing.",
+    lower:
+      "A negative result generally makes celiac disease very unlikely, now and in the future, because the condition almost never develops without these genes. That ruling-out power is the main reason the test exists.",
+    affectedBy: [
+      "Nothing day to day - the result reflects inherited genes and does not change with diet, symptoms, or time",
+      "Not affected by whether gluten is currently being eaten, unlike the celiac antibody tests",
+      "Lab-to-lab differences in exactly which gene variants are tested and how they are reported",
+    ],
+    ask: [
+      "Given this result, is any further celiac testing worthwhile?",
+      "If antibody testing comes next, do I need to be eating gluten beforehand?",
+      "Is this result relevant for my close relatives?",
+    ],
+  },
+  {
+    slug: "drug-level-monitoring",
+    name: "Therapeutic Drug Monitoring",
+    aka: ["TDM", "Drug level testing"],
+    panel: "drugs",
+    short:
+      "Blood tests that check whether a medication's level sits where your prescriber intends.",
+    measures:
+      "The concentration of a specific medication in the blood, drawn at a defined time relative to the dose. It exists for drugs where too little fails and too much causes harm, and where the same dose produces very different blood levels in different people.",
+    whyOrdered:
+      "It is standard for medications with a narrow window between effective and harmful - lithium, digoxin, some seizure medications, certain antibiotics, and transplant immunosuppressants among them. Levels are typically checked when the drug is started, after dose changes, after an interacting medication is added or stopped, and periodically once things are stable.",
+    higher:
+      "A level above what the prescriber is aiming for is broadly associated with recent dose changes, interacting medications, changes in kidney or liver function that slow the drug's clearance, and samples drawn too soon after a dose. What any given number means depends entirely on the drug, the timing of the draw, and the target the prescriber has set - there is no universal high or low, and the target range is individual.",
+    lower:
+      "A level below the intended range is broadly associated with missed or mistimed doses, interacting medications that speed the drug's clearance, and differences in absorption. Draw timing matters just as much here as it does for high results.",
+    affectedBy: [
+      "Timing of the draw relative to the last dose - most levels are meant to be drawn at a trough, just before the next dose",
+      "Missed doses in the days before the test",
+      "Newly started or stopped medications and supplements that interact",
+      "Hydration and kidney function, for drugs the kidneys clear",
+      "Whether the dose has been stable long enough to reach a steady level",
+    ],
+    ask: [
+      "Was this drawn at the right time relative to my last dose?",
+      "What level are you aiming for in my case, and why that target?",
+      "Should I take my usual dose before the blood draw on test day, or wait until after?",
+      "Do any of my other medications or supplements interact with this one?",
+    ],
+  },
+  {
+    slug: "lithium-level",
+    name: "Lithium Level",
+    aka: ["Serum lithium", "Li level"],
+    panel: "drugs",
+    short:
+      "The amount of lithium in blood, checked regularly because its safe window is narrow.",
+    measures:
+      "The concentration of lithium, a mood-stabilizing medication, in the blood. The standard sample is a trough, drawn about 12 hours after the last dose, because that is the timing the published interpretation of levels is built on.",
+    whyOrdered:
+      "Routine monitoring is part of taking lithium: at the start, after any dose change, after other medications change, and periodically thereafter. The gap between an effective level and a harmful one is small, and the kidneys' handling of lithium shifts with hydration, salt intake, and other drugs, so the level moves even when the dose does not.",
+    higher:
+      "Higher levels are broadly associated with dehydration, reduced kidney function, reduced salt intake, and interacting medications - NSAIDs such as ibuprofen, thiazide diuretics, and ACE inhibitor blood pressure drugs are the classic examples. A sample drawn earlier than the standard 12 hours after a dose also reads higher without the true steady level having changed. The target range is individual and set by the prescriber.",
+    lower:
+      "Lower levels are broadly associated with missed doses, increased fluid and salt intake, pregnancy, which increases clearance, and drugs that speed elimination. Caffeine can nudge levels down as well.",
+    affectedBy: [
+      "Timing - the standard draw is about 12 hours after the last dose, and earlier draws read high",
+      "Hydration, heavy sweating, and hot weather",
+      "Salt intake - large changes in either direction shift the level",
+      "Over-the-counter NSAIDs such as ibuprofen and naproxen",
+      "Caffeine intake",
+    ],
+    ask: [
+      "Was this drawn about 12 hours after my last dose?",
+      "Which of my other medications, including over-the-counter ones, can move this level?",
+      "What should I do about monitoring when I am ill, sweating heavily, or drinking less than usual?",
+      "Are my kidney and thyroid tests being checked alongside this?",
+    ],
+  },
+  {
+    slug: "digoxin-level",
+    name: "Digoxin Level",
+    aka: ["Serum digoxin", "Digoxin concentration"],
+    panel: "drugs",
+    short:
+      "The amount of the heart medication digoxin in blood, where the timing of the draw matters a lot.",
+    measures:
+      "The concentration of digoxin, a heart rhythm and heart failure medication, in the blood. Digoxin moves slowly from blood into tissue after each dose, so samples drawn within about six hours of a dose read misleadingly high; the standard draw is at least six to eight hours after the last dose, often just before the next one.",
+    whyOrdered:
+      "Levels are checked when the drug is started, after dose changes, when kidney function changes, when an interacting medication is added, or when the clinical picture raises the question of a level that has drifted. Digoxin is cleared by the kidneys and has one of the narrowest safety windows of any common medication.",
+    higher:
+      "Higher levels are broadly associated with declining kidney function, dehydration, interacting medications - amiodarone, verapamil, and certain antibiotics are classic examples - and samples drawn too soon after a dose, before the drug has finished distributing into tissue. The target range is individual and set by the prescriber.",
+    lower:
+      "Lower levels are broadly associated with missed doses, interacting drugs and supplements that reduce absorption or speed clearance, including St. John's wort, and differences in how the drug is absorbed.",
+    affectedBy: [
+      "Timing - draws within about six hours of a dose read falsely high",
+      "Kidney function and hydration",
+      "Several common interacting prescriptions, plus St. John's wort",
+      "Electrolyte levels, which are usually checked alongside the drug level",
+    ],
+    ask: [
+      "How long after my last dose was this drawn?",
+      "Have any of my other prescriptions changed since the last level was checked?",
+      "Are my potassium, magnesium, and kidney function being monitored with this?",
+    ],
+  },
+  {
+    slug: "rapid-strep",
+    name: "Rapid Strep Test",
+    aka: ["Rapid antigen detection test", "RADT", "Strep A swab"],
+    panel: "office",
+    short:
+      "A throat swab that looks for group A strep bacteria, with a result in minutes.",
+    measures:
+      "It detects antigens - surface proteins - of group A streptococcus bacteria on a throat swab. It looks for the presence of the bacteria itself, not the body's response to it, and delivers a result in roughly five to ten minutes.",
+    whyOrdered:
+      "It is used when a sore throat is being evaluated and knowing whether group A strep is present would change what happens next. Most sore throats are viral, and the test is the quick way to sort the bacterial minority from the rest during the visit.",
+    higher:
+      "A positive result generally indicates that group A strep bacteria are present in the throat, and false positives are uncommon. The test cannot distinguish an active infection from carriage - some people, children especially, carry the bacteria without it being the cause of their current symptoms.",
+    lower:
+      "A negative result generally makes strep less likely but does not fully rule it out, because rapid tests miss a portion of true cases. In children and adolescents, a negative rapid test is often backed up with a throat culture, which takes a day or two but catches what the rapid test missed.",
+    affectedBy: [
+      "Swab technique - a good sample rubs both tonsils and the back of the throat",
+      "Recent antibiotics, which can turn the test negative",
+      "How early or late in the illness the swab is taken",
+      "Eating, drinking, or using mouthwash immediately before the swab",
+    ],
+    ask: [
+      "If this is negative, will a culture be sent as a backup?",
+      "Could a virus be causing the symptoms even with a positive result?",
+      "Does anyone else in the household need to be checked?",
+    ],
+  },
+  {
+    slug: "influenza-test",
+    name: "Rapid Influenza Test",
+    aka: ["Rapid flu test", "RIDT", "Influenza antigen test"],
+    panel: "office",
+    short:
+      "A nose or throat swab that checks for influenza A and B, usually in under 15 minutes.",
+    measures:
+      "It detects influenza virus in a nasal or throat swab - either viral surface proteins, in the common rapid antigen versions, or viral genetic material, in the newer rapid molecular versions. Most report influenza A and influenza B separately.",
+    whyOrdered:
+      "It is used during flu season when symptoms suggest influenza and the result would change what happens next during the visit. Clinics, hospitals, and care facilities also use it to decide how to group and manage patients when flu is circulating.",
+    higher:
+      "A positive result generally indicates influenza virus is present, and false positives are uncommon while flu is circulating widely. The A or B designation identifies the type, which matters more for public health tracking than for the individual visit.",
+    lower:
+      "A negative result is weaker evidence than a positive one. Rapid antigen flu tests miss a substantial share of true infections - sensitivity is commonly quoted in the range of 50 to 70 percent - especially when the swab is taken more than three or four days after symptoms begin. During a heavy flu season, clinicians often weigh the overall picture more than a negative swab.",
+    affectedBy: [
+      "Timing - the amount of virus is highest in roughly the first three days of symptoms",
+      "Swab technique and how deep the sample is taken",
+      "Which version the office uses - molecular versions miss far fewer cases than antigen versions",
+      "Recent nasal sprays or rinses",
+    ],
+    ask: [
+      "Is this the antigen version or the more sensitive molecular version?",
+      "Given the season and my symptoms, does a negative result actually change anything?",
+      "Was I swabbed early enough in the illness for the result to be reliable?",
+    ],
+  },
+  {
+    slug: "covid-19-test",
+    name: "COVID-19 Tests",
+    aka: ["SARS-CoV-2 test", "Antigen test", "PCR test", "NAAT"],
+    panel: "office",
+    short:
+      "Antigen and PCR tests for the COVID-19 virus, trading speed against sensitivity.",
+    measures:
+      "Both types look for the SARS-CoV-2 virus, in different ways. Antigen tests detect viral surface proteins and give a result in about 15 minutes; PCR tests, a type of molecular test, amplify and detect the virus's genetic material, usually in a lab, and can find far smaller amounts of virus.",
+    whyOrdered:
+      "Testing is used for symptoms, after a known exposure, before certain procedures, and to meet some facility or travel requirements. The choice between antigen and PCR usually comes down to how fast an answer is needed versus how much sensitivity the situation calls for.",
+    higher:
+      "A positive result on either test generally indicates the virus is present. PCR can stay positive for weeks after an infection has resolved because it detects genetic fragments rather than intact virus, so a lingering positive PCR does not necessarily mean ongoing contagiousness.",
+    lower:
+      "A negative antigen test taken early - soon after symptoms start or after an exposure - is generally treated as provisional, and the FDA advises repeating antigen tests about 48 hours apart for this reason, since they often turn positive later than PCR. A negative PCR is stronger evidence, though even PCR can miss an infection if sampled very early.",
+    affectedBy: [
+      "Timing relative to exposure and symptom onset",
+      "Swab technique",
+      "Which test type was used - antigen versus PCR",
+      "Expired or heat-damaged home test kits",
+      "A recent prior infection, which can keep PCR positive for weeks",
+    ],
+    ask: [
+      "Was this an antigen test or a PCR?",
+      "If the antigen test is negative, should it be repeated after about 48 hours?",
+      "How does a recent prior infection affect how this result reads?",
+    ],
+  },
+  {
+    slug: "mono-test",
+    name: "Mono Spot Test",
+    aka: ["Monospot", "Heterophile antibody test"],
+    panel: "office",
+    short:
+      "A rapid blood test for mononucleosis that detects a distinctive antibody, not the virus itself.",
+    measures:
+      "It detects heterophile antibodies - unusual antibodies most people produce during infectious mononucleosis, which is usually caused by the Epstein-Barr virus. It measures the body's reaction to the infection rather than the virus itself, which shapes both its strengths and its blind spots.",
+    whyOrdered:
+      "It is used when mononucleosis is being considered, classically in teenagers and young adults with sore throat, marked fatigue, and swollen glands. The result comes back in minutes, during the visit.",
+    higher:
+      "A positive result generally supports a diagnosis of mononucleosis, and false positives are uncommon. The antibodies can persist for months after the illness, so a positive can also reflect a recent rather than a current infection.",
+    lower:
+      "A negative result early in the illness is common even in true mono - the antibodies often take a week or more after symptoms begin to become detectable, and a meaningful share of tests in the first week read negative in people who genuinely have it. Young children often never produce heterophile antibodies at all, so the test is much less useful in that age group. Specific Epstein-Barr virus antibody tests exist for ambiguous cases.",
+    affectedBy: [
+      "Timing - the first week of illness produces many false negatives",
+      "Age - young children frequently test negative even when infected",
+      "How long ago a past infection occurred, since the antibodies linger for months",
+    ],
+    ask: [
+      "Could this have been drawn too early in the illness to show anything yet?",
+      "If it is negative but mono still seems likely, would specific EBV antibody tests help?",
+      "How long after an infection would this test still read positive?",
     ],
   },
 ];

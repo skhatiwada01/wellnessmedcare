@@ -1,0 +1,154 @@
+---
+import Base from '../layouts/Base.astro';
+
+const SCENARIOS = [
+  {
+    id: 'bill',
+    title: 'I got a medical bill I do not understand',
+    steps: [
+      { href: '/guides/read-your-eob/', label: 'Match the bill against your EOB first - never pay a bill that exceeds it' },
+      { href: '/guides/itemized-bill-errors/', label: 'Request the itemized bill and check it for the common errors' },
+      { href: '/templates/#itemized-bill', label: 'Use the ready-made letter to request it' },
+      { href: '/guides/hospital-financial-assistance/', label: 'Apply for financial assistance before agreeing to any payment plan' },
+      { href: '/guides/negotiate-a-medical-bill/', label: 'Then negotiate what is actually left' },
+    ],
+  },
+  {
+    id: 'denied',
+    title: 'My insurance denied a claim',
+    steps: [
+      { href: '/guides/appeal-a-denied-claim/', label: 'Find out which of the four denial types you have - most are fixable' },
+      { href: '/tools/appeal-deadline/', label: 'Calculate your appeal deadline from the denial letter' },
+      { href: '/templates/#internal-appeal', label: 'Build the appeal letter with the fill-in template' },
+      { href: '/guides/no-surprises-act/', label: 'Check whether the bill was illegal in the first place' },
+    ],
+  },
+  {
+    id: 'labs',
+    title: 'I got lab results and nobody explained them',
+    steps: [
+      { href: '/tips/understanding-your-lab-report/', label: 'Learn how the report is laid out and what a flag actually means' },
+      { href: '/understand/', label: 'Look up what each test measures, in plain English' },
+      { href: '/understand/my-lab-results/', label: 'Turn your results into a printable questionnaire for your appointment' },
+      { href: '/tips/nobody-called-about-my-results/', label: 'If nobody has called, use the follow-up script' },
+    ],
+  },
+  {
+    id: 'choosing',
+    title: 'I am choosing a health plan',
+    steps: [
+      { href: '/guides/deductible-copay-coinsurance/', label: 'Get the four cost-sharing terms straight with real math' },
+      { href: '/tools/plan-comparison/', label: 'Compare the plans side by side: best case, your estimate, worst case' },
+      { href: '/guides/hsa-fsa-hra/', label: 'Understand which savings account comes with which plan' },
+      { href: '/guides/in-network-vs-out-of-network/', label: 'Verify your doctors are in-network for the specific plan' },
+    ],
+  },
+  {
+    id: 'job-loss',
+    title: 'I lost my job and my coverage',
+    steps: [
+      { href: '/tools/cobra-vs-marketplace/', label: 'Run the COBRA vs. marketplace arithmetic, including the deductible reset' },
+      { href: '/guides/hsa-fsa-hra/', label: 'Know what happens to your HSA (yours) and FSA (usually not)' },
+      { href: '/guides/in-network-vs-out-of-network/', label: 'Check networks before switching plans' },
+    ],
+  },
+  {
+    id: 'appointment',
+    title: 'I have an appointment coming up',
+    steps: [
+      { href: '/tips/getting-the-most-from-a-short-appointment/', label: 'Structure the 15 minutes so the important thing gets said first' },
+      { href: '/tools/trackers/', label: 'Print the medication list and any tracker the visit needs' },
+      { href: '/tips/preparing-for-a-lab-test/', label: 'If bloodwork is planned, know what to ask beforehand' },
+      { href: '/tips/getting-a-second-opinion/', label: 'If the last visit did not sit right, a second opinion is routine' },
+    ],
+  },
+  {
+    id: 'procedure',
+    title: 'I am having a procedure or hospital stay',
+    steps: [
+      { href: '/guides/what-things-actually-cost/', label: 'Get the codes and a real cost picture before the date' },
+      { href: '/guides/in-network-vs-out-of-network/', label: 'Confirm every clinician involved is in-network, in writing' },
+      { href: '/guides/no-surprises-act/', label: 'Know which surprise bills are now illegal' },
+      { href: '/tools/out-of-pocket/', label: 'Estimate your share from your deductible and coinsurance' },
+    ],
+  },
+  {
+    id: 'parent',
+    title: 'I am helping a parent or someone else',
+    steps: [
+      { href: '/tips/helping-an-aging-parent/', label: 'Sort the permissions paperwork before you need it' },
+      { href: '/tips/managing-multiple-specialists/', label: 'Become the one person who sees the whole picture' },
+      { href: '/tools/trackers/', label: 'Print the medication list and appointment notes sheets' },
+      { href: '/guides/hospital-financial-assistance/', label: 'If bills are piling up, assistance exists and almost nobody applies' },
+    ],
+  },
+];
+---
+
+<Base
+  title="Start Here"
+  description="Pick your situation - a confusing bill, a denied claim, unexplained lab results, choosing a plan - and get the pages that solve it, in order."
+>
+  <div class="wrap" style="padding-top:2.5rem">
+    <div class="prose prose-center" style="text-align:center">
+      <h1>What brought you here?</h1>
+      <p class="lede" style="margin-inline:auto">
+        Pick your situation and get the right pages in the right order - no browsing
+        required.
+      </p>
+    </div>
+
+    <div class="scenario-grid">
+      {
+        SCENARIOS.map((s) => (
+          <section class="card scenario" id={s.id}>
+            <h2>{s.title}</h2>
+            <ol>
+              {s.steps.map((step) => (
+                <li>
+                  <a href={step.href}>{step.label}</a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))
+      }
+    </div>
+
+    <div class="prose prose-center" style="margin-top:3rem;text-align:center">
+      <p style="color:var(--text-muted)">
+        Something else? <a href="/search/">Search the whole site</a> or browse the
+        <a href="/guides/">guides</a>, <a href="/tools/">tools</a>,
+        <a href="/understand/">lab reference</a>, and <a href="/tips/">tips</a>.
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .scenario-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+    margin-top: 2.25rem;
+  }
+  .scenario h2 {
+    font-size: 1.05rem;
+    margin: 0 0 0.6rem;
+  }
+  .scenario ol {
+    margin: 0;
+    padding-left: 1.2rem;
+    font-size: 0.92rem;
+  }
+  .scenario li {
+    margin-bottom: 0.45rem;
+    color: var(--text-muted);
+  }
+  .scenario a {
+    text-decoration: none;
+  }
+  .scenario a:hover {
+    text-decoration: underline;
+  }
+</style>
