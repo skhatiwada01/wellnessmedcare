@@ -5,13 +5,10 @@ bottom; the order matters for the first three.
 
 ## Day one
 
-- [ ] **Create the mailboxes the site promises.** Three addresses appear on live pages
-      and must work before anyone writes to them:
-      - `corrections@wellnessmedcare.com` (contact page)
-      - `hello@wellnessmedcare.com` (contact page, terms)
-      - `privacy@wellnessmedcare.com` (contact page, privacy policy)
-      Aliases forwarding to one inbox are fine. Most domain registrars include email
-      forwarding free; otherwise Cloudflare Email Routing is free.
+- [ ] **Verify the contact mailbox works.** Every page that lists an email uses
+      `support@sisrallc.com` (contact page, privacy policy, terms). Send it a test
+      message and confirm it arrives - a privacy policy with a dead contact address
+      is a real problem.
 - [ ] **Verify the domain in Google Search Console** (search.google.com/search-console,
       use the Domain property type, verify via DNS TXT record) and **submit the
       sitemap**: `https://wellnessmedcare.com/sitemap-index.xml`. Indexing 150 pages

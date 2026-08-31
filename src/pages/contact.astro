@@ -2,9 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Callout from '../components/Callout.astro';
 
-const CORRECTIONS = 'corrections@wellnessmedcare.com';
-const HELLO = 'hello@wellnessmedcare.com';
-const PRIVACY = 'privacy@wellnessmedcare.com';
+const EMAIL = 'support@sisrallc.com';
 ---
 
 <Base
@@ -23,8 +21,9 @@ const PRIVACY = 'privacy@wellnessmedcare.com';
       <h2>Corrections</h2>
       <p>
         If a number, a deadline, a rule, or an explanation on this site is wrong or out
-        of date, email <a href={`mailto:${CORRECTIONS}`}>{CORRECTIONS}</a> with the page
-        address and what you believe is incorrect. A link to a source helps but is not
+        of date, email <a href={`mailto:${EMAIL}?subject=Correction`}>{EMAIL}</a> with
+        "Correction" in the subject line, the page address, and what you believe is
+        incorrect. A link to a source helps but is not
         required. Corrections are made quickly, and the page's "current as of" date is
         updated when they are.
       </p>
@@ -32,15 +31,16 @@ const PRIVACY = 'privacy@wellnessmedcare.com';
       <h2>Suggestions and everything else</h2>
       <p>
         Topic requests, a tracker you wish existed, a letter template we should add, or
-        anything else: <a href={`mailto:${HELLO}`}>{HELLO}</a>. We read everything, and
+        anything else: <a href={`mailto:${EMAIL}`}>{EMAIL}</a>. We read everything, and
         the roadmap genuinely moves based on what people ask for.
       </p>
 
       <h2>Privacy requests</h2>
       <p>
         Questions about your data, or requests under a privacy law:
-        <a href={`mailto:${PRIVACY}`}>{PRIVACY}</a>. Our
-        <a href="/privacy/">privacy policy</a> describes the little we collect.
+        <a href={`mailto:${EMAIL}?subject=Privacy request`}>{EMAIL}</a>, with "Privacy
+        request" in the subject line. Our <a href="/privacy/">privacy policy</a>
+        describes the little we collect.
       </p>
 
       <Callout tone="warn" title="What we cannot answer">
