@@ -5,10 +5,9 @@ bottom; the order matters for the first three.
 
 ## Day one
 
-- [ ] **Verify the contact mailbox works.** Every page that lists an email uses
-      `support@sisrallc.com` (contact page, privacy policy, terms). Send it a test
-      message and confirm it arrives - a privacy policy with a dead contact address
-      is a real problem.
+- [x] **Contact mailbox.** Done - every page that lists an email uses
+      `support@sisrallc.com` (contact page, privacy policy, terms), an existing
+      monitored inbox.
 - [ ] **Verify the domain in Google Search Console** (search.google.com/search-console,
       use the Domain property type, verify via DNS TXT record) and **submit the
       sitemap**: `https://wellnessmedcare.com/sitemap-index.xml`. Indexing 150 pages

@@ -98,7 +98,6 @@ and needs no banner. The newsletter form renders only when
   (analytics choice, newsletter endpoint)
 - Have a lawyer review `src/pages/privacy.astro` and `src/pages/terms.astro` - they are
   reasonable starting drafts, not reviewed documents
-- Confirm support@sisrallc.com (the site-wide contact address) is monitored
 
 **Before applying to AdSense**
 
