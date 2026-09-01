@@ -23,14 +23,15 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
 
 <Base
   title="Printable Health Trackers"
-  description={`${TRACKERS.length} free blank tracking sheets: blood sugar, blood pressure, medications, symptoms, mood, pregnancy, recovery and more. Print, or download as Word or CSV.`}
+  description={`${TRACKERS.length} free blank tracking sheets: blood sugar, blood pressure, medications, symptoms, mood, pregnancy, recovery and more. Print or download several at once.`}
 >
   <div class="wrap" style="padding-top:2.5rem">
     <div class="prose">
       <h1>Printable trackers</h1>
       <p class="lede">
         {TRACKERS.length} blank sheets for keeping your own records between appointments.
-        Print one directly, or download it as a Word document or CSV.
+        Print or download any one directly - or tick several and get them as one print
+        job or a single Word file, each sheet on its own page.
       </p>
 
       <Callout tone="note" title="These are yours, not ours">
@@ -75,7 +76,13 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
                 data-slug={t.slug}
                 data-search={`${t.title} ${t.useCase} ${t.columns.join(' ')}`.toLowerCase()}
               >
-                <h3 style="margin:0">{t.title}</h3>
+                <div class="tracker-head">
+                  <h3 style="margin:0">{t.title}</h3>
+                  <label class="pick">
+                    <input type="checkbox" data-pick={t.slug} />
+                    <span>Select</span>
+                  </label>
+                </div>
                 <p>{t.useCase}</p>
 
                 <div class="field" style="margin:.9rem 0 .4rem">
@@ -112,9 +119,20 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
       <p>
         For a specific review, ask the office how many days of records they want before
         you start. Two weeks is a common request for blood pressure and sleep; a diabetes
-        review often wants whatever span sits between appointments.
+        review often wants whatever span sits between appointments. And if one
+        appointment needs several sheets - a medication list, a symptom diary, and the
+        notes page is a common trio - select them all and print once.
       </p>
       <Support context="tool" />
+    </div>
+  </div>
+
+  <div class="batch-bar" id="batch-bar" role="region" aria-label="Selected trackers" hidden>
+    <p><strong id="batch-count">0 selected</strong><span id="batch-names"></span></p>
+    <div class="batch-actions">
+      <button class="btn" type="button" id="batch-print">Print selected</button>
+      <button class="btn btn-ghost" type="button" id="batch-docx">One Word file</button>
+      <button class="btn btn-ghost" type="button" id="batch-clear">Clear</button>
     </div>
   </div>
 
@@ -140,6 +158,9 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
   );
   const bySlug = new Map(data.map((t) => [t.slug, t]));
 
+  const rowsFor = (slug: string) =>
+    Number((document.getElementById(`rows-${slug}`) as HTMLSelectElement).value);
+
   // ---- search ----------------------------------------------------------
   const search = document.getElementById('tracker-search') as HTMLInputElement;
   const emptyNote = document.getElementById('tracker-empty') as HTMLElement;
@@ -148,11 +169,12 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
     const q = search.value.trim().toLowerCase();
     let visible = 0;
     document.querySelectorAll<HTMLElement>('.tracker-card').forEach((card) => {
-      const hit = !q || (card.dataset.search ?? '').includes(q);
+      // Selected cards stay visible so a selection is never hidden by the filter.
+      const picked = card.querySelector<HTMLInputElement>('input[data-pick]')!.checked;
+      const hit = !q || picked || (card.dataset.search ?? '').includes(q);
       card.style.display = hit ? '' : 'none';
       if (hit) visible++;
     });
-    // Hide any section whose cards are all filtered out.
     document.querySelectorAll<HTMLElement>('.tracker-section').forEach((section) => {
       const any = [...section.querySelectorAll<HTMLElement>('.tracker-card')].some(
         (c) => c.style.display !== 'none',
@@ -162,15 +184,14 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
     emptyNote.style.display = visible === 0 ? 'block' : 'none';
   });
 
-  // ---- print -----------------------------------------------------------
+  // ---- print rendering -------------------------------------------------
   const esc = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  function printTracker(spec: TrackerLite, rows: number) {
-    const area = document.getElementById('print-area')!;
+  function trackerPrintHTML(spec: TrackerLite, rows: number): string {
     const headerCells = spec.columns.map((c) => `<th>${esc(c)}</th>`).join('');
     const bodyRow = `<tr>${spec.columns.map(() => '<td>&nbsp;</td>').join('')}</tr>`;
-    area.innerHTML = `
+    return `<section class="print-page">
       <h1>${esc(spec.title)}</h1>
       <p class="print-intro">${esc(spec.intro)}</p>
       <p class="print-meta">Name: ______________________________&nbsp;&nbsp;&nbsp;&nbsp;Date range: ____________________</p>
@@ -180,16 +201,82 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
       </table>
       ${spec.notes.map((n) => `<p class="print-notes">${esc(n)}</p>`).join('')}
       <p class="print-footer">Created with wellnessmedcare.com. This document is for your own records. It is not medical advice.</p>
-    `;
+    </section>`;
+  }
+
+  function printSpecs(specs: { spec: TrackerLite; rows: number }[]) {
+    const area = document.getElementById('print-area')!;
+    area.innerHTML = specs.map(({ spec, rows }) => trackerPrintHTML(spec, rows)).join('');
     document.body.classList.add('printing-tracker');
     window.print();
-    // Restore after the dialog closes (afterprint fires in all modern browsers).
     window.addEventListener(
       'afterprint',
       () => document.body.classList.remove('printing-tracker'),
       { once: true },
     );
   }
+
+  // ---- multi-select ----------------------------------------------------
+  const bar = document.getElementById('batch-bar') as HTMLElement;
+  const countEl = document.getElementById('batch-count')!;
+  const namesEl = document.getElementById('batch-names')!;
+
+  const picked = (): string[] =>
+    [...document.querySelectorAll<HTMLInputElement>('input[data-pick]:checked')].map(
+      (i) => i.dataset.pick!,
+    );
+
+  function refreshBar() {
+    const slugs = picked();
+    bar.hidden = slugs.length === 0;
+    countEl.textContent = `${slugs.length} selected`;
+    const names = slugs.map((s) => bySlug.get(s)!.title);
+    namesEl.textContent =
+      names.length > 0
+        ? ': ' + (names.length <= 3 ? names.join(', ') : names.slice(0, 3).join(', ') + ` and ${names.length - 3} more`)
+        : '';
+  }
+
+  document.querySelectorAll<HTMLInputElement>('input[data-pick]').forEach((cb) => {
+    cb.addEventListener('change', () => {
+      cb.closest('.tracker-card')?.classList.toggle('is-picked', cb.checked);
+      refreshBar();
+    });
+  });
+
+  document.getElementById('batch-clear')!.addEventListener('click', () => {
+    document.querySelectorAll<HTMLInputElement>('input[data-pick]:checked').forEach((cb) => {
+      cb.checked = false;
+      cb.closest('.tracker-card')?.classList.remove('is-picked');
+    });
+    refreshBar();
+    search.dispatchEvent(new Event('input'));
+  });
+
+  document.getElementById('batch-print')!.addEventListener('click', () => {
+    const specs = picked().map((slug) => ({ spec: bySlug.get(slug)!, rows: rowsFor(slug) }));
+    if (specs.length > 0) printSpecs(specs);
+  });
+
+  document.getElementById('batch-docx')!.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const specs = picked().map((slug) => ({ ...bySlug.get(slug)!, rows: rowsFor(slug) }));
+    if (specs.length === 0) return;
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Preparing...';
+    try {
+      const { downloadTrackerBundle } = await loadDocx();
+      await downloadTrackerBundle(specs, 'health-trackers.docx');
+      btn.textContent = 'Downloaded';
+    } catch {
+      btn.textContent = 'Failed';
+    }
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = original;
+    }, 2000);
+  });
 
   // ---- per-card actions ------------------------------------------------
   document.querySelectorAll<HTMLElement>('.tracker-card').forEach((card) => {
@@ -201,7 +288,7 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
         const rows = Number(rowSelect.value);
 
         if (btn.dataset.action === 'print') {
-          printTracker(spec, rows);
+          printSpecs([{ spec, rows }]);
           return;
         }
 
@@ -229,6 +316,35 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
 </script>
 
 <style>
+  .tracker-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .pick {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex: none;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    user-select: none;
+  }
+  .pick input {
+    width: 0.95rem;
+    height: 0.95rem;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .tracker-card.is-picked {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
   .tracker-card .field label {
     font-size: 0.82rem;
     color: var(--text-muted);
@@ -240,5 +356,47 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
   .tracker-card .tool-actions .btn {
     padding: 0.4rem 0.9rem;
     font-size: 0.9rem;
+  }
+
+  .batch-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem 1.5rem;
+    padding: 0.8rem 1.25rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  }
+  .batch-bar[hidden] {
+    display: none;
+  }
+  .batch-bar p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 56ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .batch-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex: none;
+  }
+  .batch-actions .btn {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.9rem;
+  }
+  @media print {
+    .batch-bar {
+      display: none !important;
+    }
   }
 </style>

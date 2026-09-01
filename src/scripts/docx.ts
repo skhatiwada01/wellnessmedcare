@@ -87,8 +87,8 @@ const cell = (text: string, bold = false) =>
     ],
   });
 
-/** A printable blank tracking sheet: header row plus empty rows to fill in by hand. */
-export async function downloadTracker(spec: TrackerSpec, filename: string) {
+/** The document body for one tracker: title, intro, name line, table, notes. */
+function trackerChildren(spec: TrackerSpec) {
   const table = new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     borders: {
@@ -111,44 +111,56 @@ export async function downloadTracker(spec: TrackerSpec, filename: string) {
     ],
   });
 
+  return [
+    new Paragraph({ text: spec.title, heading: HeadingLevel.HEADING_1 }),
+    new Paragraph({
+      spacing: { after: 240 },
+      children: [new TextRun({ text: spec.intro, size: 20, color: '595959' })],
+    }),
+    new Paragraph({
+      spacing: { after: 240 },
+      children: [
+        new TextRun({ text: 'Name: ', bold: true, size: 20 }),
+        new TextRun({ text: '_'.repeat(34), size: 20 }),
+        new TextRun({ text: '     Date range: ', bold: true, size: 20 }),
+        new TextRun({ text: '_'.repeat(26), size: 20 }),
+      ],
+    }),
+    table,
+    ...(spec.notes ?? []).map(
+      (n) =>
+        new Paragraph({
+          spacing: { before: 200 },
+          children: [new TextRun({ text: n, size: 20 })],
+        }),
+    ),
+    new Paragraph({
+      spacing: { before: 400 },
+      alignment: AlignmentType.LEFT,
+      children: [
+        new TextRun({ text: FOOTER_NOTE, size: 16, color: '767171', italics: true }),
+      ],
+    }),
+  ];
+}
+
+/** A printable blank tracking sheet: header row plus empty rows to fill in by hand. */
+export async function downloadTracker(spec: TrackerSpec, filename: string) {
   const doc = new Document({
     styles: { default: { document: { run: { font: 'Calibri', size: 22 } } } },
-    sections: [
-      {
-        properties: {},
-        children: [
-          new Paragraph({ text: spec.title, heading: HeadingLevel.HEADING_1 }),
-          new Paragraph({
-            spacing: { after: 240 },
-            children: [new TextRun({ text: spec.intro, size: 20, color: '595959' })],
-          }),
-          new Paragraph({
-            spacing: { after: 240 },
-            children: [
-              new TextRun({ text: 'Name: ', bold: true, size: 20 }),
-              new TextRun({ text: '_'.repeat(34), size: 20 }),
-              new TextRun({ text: '     Date range: ', bold: true, size: 20 }),
-              new TextRun({ text: '_'.repeat(26), size: 20 }),
-            ],
-          }),
-          table,
-          ...(spec.notes ?? []).map(
-            (n) =>
-              new Paragraph({
-                spacing: { before: 200 },
-                children: [new TextRun({ text: n, size: 20 })],
-              }),
-          ),
-          new Paragraph({
-            spacing: { before: 400 },
-            alignment: AlignmentType.LEFT,
-            children: [
-              new TextRun({ text: FOOTER_NOTE, size: 16, color: '767171', italics: true }),
-            ],
-          }),
-        ],
-      },
-    ],
+    sections: [{ properties: {}, children: trackerChildren(spec) }],
+  });
+  saveBlob(await Packer.toBlob(doc), filename);
+}
+
+/**
+ * Several trackers in ONE Word file - each tracker starts its own page, because each
+ * spec becomes its own document section.
+ */
+export async function downloadTrackerBundle(specs: TrackerSpec[], filename: string) {
+  const doc = new Document({
+    styles: { default: { document: { run: { font: 'Calibri', size: 22 } } } },
+    sections: specs.map((spec) => ({ properties: {}, children: trackerChildren(spec) })),
   });
   saveBlob(await Packer.toBlob(doc), filename);
 }

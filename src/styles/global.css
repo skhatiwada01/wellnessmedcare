@@ -309,6 +309,7 @@ th { font-weight: 650; background: var(--surface-alt); }
   body.printing-tracker .site-header,
   body.printing-tracker .site-footer { display: none !important; }
   body.printing-tracker #print-area { display: block; }
+  #print-area .print-page:not(:first-child) { break-before: page; }
   #print-area h1 { font-size: 16pt; margin: 0 0 4pt; }
   #print-area .print-intro { font-size: 10pt; color: #444; margin: 0 0 10pt; }
   #print-area .print-meta { font-size: 10pt; margin: 0 0 10pt; }
