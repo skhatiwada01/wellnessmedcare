@@ -48,7 +48,6 @@ const breadcrumbLd = {
   ],
 };
 
-const aka = test.aka?.length ? ` (${test.aka.join(', ')})` : '';
 const isVital = test.panel === 'vitals';
 
 const related = LAB_TESTS.filter((t) => t.panel === test.panel && t.slug !== test.slug).slice(0, 6);
@@ -64,8 +63,8 @@ const TOC = [
 ---
 
 <Base
-  title={`${test.name}${aka} - What This Test Measures`}
-  description={`${test.short} What the ${test.name} test measures, why it is ordered, what moves it up or down, and what to ask your doctor.`}
+  title={`${test.name} - What This Test Measures`}
+  description={`${test.short} What it measures, why it is ordered, and what to ask.`}
   jsonLd={[faqLd, breadcrumbLd]}
 >
   <article class="wrap" style="padding-top:2.5rem">
