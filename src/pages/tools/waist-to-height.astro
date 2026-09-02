@@ -91,9 +91,7 @@ import Callout from '../../components/Callout.astro';
     waist-to-height ratio alongside BMI:
     <a href="https://www.nice.org.uk/guidance/ng246" rel="noopener nofollow" target="_blank">nice.org.uk/guidance/ng246</a>.
   </p>
-</Tool>
-
-<script>
+  <script>
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
 
   const units = document.getElementById('units') as HTMLSelectElement;
@@ -128,3 +126,6 @@ import Callout from '../../components/Callout.astro';
     setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
   );
 </script>
+</Tool>
+
+

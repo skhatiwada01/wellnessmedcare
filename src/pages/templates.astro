@@ -112,9 +112,7 @@ const fieldId = (tplId: string, ph: string) =>
       <Support context="tool" />
     </div>
   </div>
-</Base>
-
-<script>
+  <script>
   // Loaded on demand - the docx library is ~350KB and most readers never click download.
   const loadDocx = () => import('../scripts/docx');
 
@@ -189,6 +187,9 @@ const fieldId = (tplId: string, ph: string) =>
     });
   });
 </script>
+</Base>
+
+
 
 <style>
   .tpl {

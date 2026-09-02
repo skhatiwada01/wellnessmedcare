@@ -130,9 +130,7 @@ const grouped = (Object.keys(PANELS) as PanelKey[])
   </div>
 
   <script type="application/json" id="lab-data" set:html={JSON.stringify(payload)} is:inline />
-</Base>
-
-<script>
+  <script>
   // docx is ~350KB - loaded only when the download button is clicked.
   const loadDocx = () => import('../../scripts/docx');
 
@@ -383,6 +381,9 @@ const grouped = (Object.keys(PANELS) as PanelKey[])
 
   document.getElementById('print-sheet')?.addEventListener('click', () => window.print());
 </script>
+</Base>
+
+
 
 <style>
   .panel-group {

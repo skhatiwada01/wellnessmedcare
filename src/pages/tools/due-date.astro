@@ -78,9 +78,7 @@ import Callout from '../../components/Callout.astro';
     to get real numbers out of a hospital, and a
     <a href="/tools/trackers/">pregnancy appointment log</a> keeps the visits organized.
   </p>
-</Tool>
-
-<script>
+  <script>
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
   const fmt = (d: Date) =>
     d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -123,3 +121,6 @@ import Callout from '../../components/Callout.astro';
     setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
   );
 </script>
+</Tool>
+
+

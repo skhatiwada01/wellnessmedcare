@@ -12,31 +12,17 @@ const { test } = Astro.props;
 const panel = PANELS[test.panel];
 
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
-const faqLd = {
+const medicalLd = {
   '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: `What does the ${test.name} test measure?`,
-      acceptedAnswer: { '@type': 'Answer', text: test.measures },
-    },
-    {
-      '@type': 'Question',
-      name: `Why would a doctor order a ${test.name} test?`,
-      acceptedAnswer: { '@type': 'Answer', text: test.whyOrdered },
-    },
-    {
-      '@type': 'Question',
-      name: `What is associated with a higher ${test.name} result?`,
-      acceptedAnswer: { '@type': 'Answer', text: test.higher },
-    },
-    {
-      '@type': 'Question',
-      name: `What is associated with a lower ${test.name} result?`,
-      acceptedAnswer: { '@type': 'Answer', text: test.lower },
-    },
-  ],
+  '@type': 'MedicalWebPage',
+  name: `${test.name} - What This Test Measures`,
+  url: pageUrl,
+  about: {
+    '@type': 'MedicalTest',
+    name: test.name,
+    ...(test.aka?.length ? { alternateName: test.aka } : {}),
+  },
+  lastReviewed: '2026-08-31',
 };
 const breadcrumbLd = {
   '@context': 'https://schema.org',
@@ -65,7 +51,7 @@ const TOC = [
 <Base
   title={`${test.name} - What This Test Measures`}
   description={`${test.short} What it measures, why it is ordered, and what to ask.`}
-  jsonLd={[faqLd, breadcrumbLd]}
+  jsonLd={[medicalLd, breadcrumbLd]}
 >
   <article class="wrap" style="padding-top:2.5rem">
     <div class="article-layout">

@@ -84,9 +84,7 @@ import Callout from '../../components/Callout.astro';
     The USPSTF lung cancer screening recommendation:
     <a href="https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening" rel="noopener nofollow" target="_blank">uspreventiveservicestaskforce.org</a>.
   </p>
-</Tool>
-
-<script>
+  <script>
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
 
   document.getElementById('calc')!.addEventListener('click', () => {
@@ -109,3 +107,6 @@ import Callout from '../../components/Callout.astro';
     setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
   );
 </script>
+</Tool>
+
+

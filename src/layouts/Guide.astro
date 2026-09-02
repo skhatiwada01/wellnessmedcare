@@ -28,9 +28,11 @@ const articleLd = {
   '@type': 'Article',
   headline: title,
   description,
+  datePublished: updated.toISOString(),
   dateModified: updated.toISOString(),
-  author: { '@type': 'Organization', name: 'Wellness Med Care' },
-  publisher: { '@type': 'Organization', name: 'Wellness Med Care' },
+  image: [new URL('/og-default.png', Astro.site).href],
+  author: { '@id': new URL('/#org', Astro.site).href },
+  publisher: { '@id': new URL('/#org', Astro.site).href },
   mainEntityOfPage: pageUrl,
 };
 const breadcrumbLd = {
@@ -43,7 +45,12 @@ const breadcrumbLd = {
 };
 ---
 
-<Base title={title} description={description} jsonLd={[articleLd, breadcrumbLd]}>
+<Base
+  title={title}
+  description={description}
+  jsonLd={[articleLd, breadcrumbLd]}
+  article={{ published: updated.toISOString(), modified: updated.toISOString() }}
+>
   <article class="wrap" style="padding-top:2.5rem">
     <div class="article-layout">
       <div class="prose">

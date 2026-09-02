@@ -94,9 +94,7 @@ import Callout from '../../components/Callout.astro';
     question for a tax professional - what is certain is that the rule only works with
     receipts kept permanently.
   </p>
-</Tool>
-
-<script>
+  <script>
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
   const money = (v: number) =>
     v.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -133,3 +131,6 @@ import Callout from '../../components/Callout.astro';
     setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
   );
 </script>
+</Tool>
+
+

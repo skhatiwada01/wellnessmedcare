@@ -8,6 +8,10 @@ bottom; the order matters for the first three.
 - [x] **Contact mailbox.** Done - every page that lists an email uses
       `support@sisrallc.com` (contact page, privacy policy, terms), an existing
       monitored inbox.
+- [ ] **Set the primary domain at the host.** Add both wellnessmedcare.com and
+      www.wellnessmedcare.com in the host's domain settings and make the apex primary,
+      so www and http 301 to https://wellnessmedcare.com - every canonical, sitemap
+      URL, and structured-data @id assumes that exact origin.
 - [ ] **Verify the domain in Google Search Console** (search.google.com/search-console,
       use the Domain property type, verify via DNS TXT record) and **submit the
       sitemap**: `https://wellnessmedcare.com/sitemap-index.xml`. Indexing 150 pages

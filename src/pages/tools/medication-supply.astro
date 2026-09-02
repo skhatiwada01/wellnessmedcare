@@ -89,9 +89,7 @@ import Callout from '../../components/Callout.astro';
     more important habit - the <a href="/tools/trackers/">medication list tracker</a> is
     the sheet for that.
   </p>
-</Tool>
-
-<script>
+  <script>
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
   const fmt = (d: Date) =>
     d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -137,3 +135,6 @@ import Callout from '../../components/Callout.astro';
     setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
   );
 </script>
+</Tool>
+
+

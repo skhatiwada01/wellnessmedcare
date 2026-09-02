@@ -139,9 +139,7 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
   <div id="print-area" aria-hidden="true"></div>
 
   <script type="application/json" id="tracker-data" set:html={JSON.stringify(payload)} is:inline />
-</Base>
-
-<script>
+  <script>
   // docx is ~350KB - loaded only when a download button is clicked.
   const loadDocx = () => import('../../scripts/docx');
 
@@ -314,6 +312,9 @@ const grouped = (Object.keys(TRACKER_CATEGORIES) as TrackerCategory[])
     });
   });
 </script>
+</Base>
+
+
 
 <style>
   .tracker-head {

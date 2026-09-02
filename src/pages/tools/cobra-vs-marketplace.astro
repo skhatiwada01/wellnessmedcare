@@ -140,9 +140,7 @@ import Callout from '../../components/Callout.astro';
       your specific case.
     </p>
   </Callout>
-</Tool>
-
-<script>
+  <script>
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
   const num = (id: string, fallback = NaN) => {
     const v = parseFloat($(id).value);
@@ -214,6 +212,9 @@ import Callout from '../../components/Callout.astro';
     setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
   );
 </script>
+</Tool>
+
+
 
 <style>
   .side-set {

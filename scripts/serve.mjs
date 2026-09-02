@@ -24,6 +24,7 @@ const server = http.createServer((req, res) =>
   handler(req, res, {
     public: 'dist',
     directoryListing: false,
+    trailingSlash: true,
     headers: [
       {
         // Hashed build assets never change - cache them forever.

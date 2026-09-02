@@ -69,9 +69,7 @@ import Callout from '../../components/Callout.astro';
     and there is a <a href="/templates/#internal-appeal">fill-in appeal letter</a> ready
     to send.
   </p>
-</Tool>
-
-<script>
+  <script>
   const input = document.getElementById('denial-date') as HTMLInputElement;
   const result = document.getElementById('result') as HTMLElement;
   const internal = document.getElementById('internal-date') as HTMLElement;
@@ -122,3 +120,6 @@ import Callout from '../../components/Callout.astro';
   input.addEventListener('input', calculate);
   input.addEventListener('change', calculate);
 </script>
+</Tool>
+
+

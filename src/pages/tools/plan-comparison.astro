@@ -121,9 +121,7 @@ import Callout from '../../components/Callout.astro';
     identically across insurers precisely so you can compare. Premiums come from your
     enrollment portal or offer letter.
   </p>
-</Tool>
-
-<script>
+  <script>
   interface Plan {
     name: string;
     premium: number;
@@ -195,6 +193,9 @@ import Callout from '../../components/Callout.astro';
     setTimeout(() => ((document.getElementById('result') as HTMLElement).hidden = true), 0),
   );
 </script>
+</Tool>
+
+
 
 <style>
   .plan-set {

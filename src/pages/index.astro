@@ -40,7 +40,16 @@ const SECTIONS = [
 ---
 
 <Base
-  title="Wellness Med Care"
+  title="Wellness Med Care - Understand Medical Bills, Insurance & Lab Tests"
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Wellness Med Care',
+      url: 'https://wellnessmedcare.com/',
+      publisher: { '@id': 'https://wellnessmedcare.com/#org' },
+    },
+  ]}
   description="Free plain-English guides, calculators, and printable trackers for US medical bills, health insurance, lab reports, and healthcare prices."
 >
   <div class="wrap hero">

@@ -139,9 +139,7 @@ import Callout from '../../components/Callout.astro';
     The formula and the adult categories are published by the CDC:
     <a href="https://www.cdc.gov/bmi/adult-calculator/index.html" rel="noopener nofollow" target="_blank">cdc.gov/bmi</a>.
   </p>
-</Tool>
-
-<script>
+  <script>
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
   const units = $<HTMLSelectElement>('units');
@@ -201,3 +199,6 @@ import Callout from '../../components/Callout.astro';
     }
   });
 </script>
+</Tool>
+
+

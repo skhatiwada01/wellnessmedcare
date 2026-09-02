@@ -161,6 +161,35 @@ Total: 184 pages, all internal links verified, zero em dashes, build green.
 
 ---
 
+## SEO audit (August 31, 2026)
+
+A three-lens SEO audit (built pages, structured data, crawl infrastructure) plus a
+deterministic battery over all 184 built pages ran after the content expansion.
+Verdict: technically clean foundation; everything found was fixed the same day:
+
+- **Broken, fixed:** Astro's HTML compression was deleting the space between prose
+  and 141 inline links ("browse theguides") - disabled compressHTML; zero remain.
+  FAQPage markup on 112 lab pages (ineligible for rich results since 2023 and a
+  content-mismatch risk) replaced with accurate MedicalWebPage/MedicalTest typing.
+  15 pages emitted scripts after the closing html tag - all moved inside the layout.
+- **Improvements applied:** descriptive homepage title + WebSite schema (site-name
+  control for a new domain); lab titles de-stuffed (108 over-length titles down
+  to 30, all editorial); /search/ noindexed and out of the sitemap; sitemap lastmod
+  from real updated dates; Organization schema with @id, raster logo, email;
+  datePublished + og:type article + article timestamps on all guides/tips;
+  breadcrumbs on calculator pages; raster favicon set incl. favicon.ico and
+  apple-touch-icon; og:locale corrected; dead hreflang and sitemap i18n options
+  removed until a second locale ships; trailing-slash 301s on the Node server;
+  Pagefind cache header on Netlify.
+- **Left for editorial judgment:** ~30 guide/tip titles run past 70 chars (they
+  truncate gracefully; shortening would cost clarity), and the E-E-A-T item below.
+
+**The one SEO lever code cannot pull: a named human.** Every article is credited to
+the organization. For YMYL-adjacent content on a brand-new domain, one real name
+with a real bio (billing/insurance experience counts; no clinical credential needed
+or claimed), a byline block, and Person schema is the highest-value remaining
+change. Only you can decide to put your name on it.
+
 ## Standing invariants (re-verified this pass)
 
 - Zero reader-typed data transmitted or stored, anywhere, ever
