@@ -82,9 +82,8 @@ deliberately no `prefers-color-scheme` default - light is the default regardless
 **Analytics and env vars.** All optional settings live in environment variables,
 documented in [.env.example](.env.example) - copy it to `.env` locally or set them in
 the host's environment settings, then rebuild (they are baked in at build time).
-Google Analytics (`PUBLIC_GA_MEASUREMENT_ID`) is consent-gated: a banner appears
-automatically and no request reaches Google until the visitor accepts; the choice is
-changeable on the privacy page. GoatCounter (`PUBLIC_GOATCOUNTER_CODE`) is cookieless
+Google Analytics (`G-0LT2L2MLY3` by default, overridable via `PUBLIC_GA_MEASUREMENT_ID`) loads on
+every page; visitors can opt out per device on the privacy page. GoatCounter (`PUBLIC_GOATCOUNTER_CODE`) is cookieless
 and needs no banner. The newsletter form renders only when
 `PUBLIC_NEWSLETTER_ENDPOINT` is set.
 

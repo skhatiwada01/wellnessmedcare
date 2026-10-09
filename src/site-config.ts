@@ -7,8 +7,8 @@
  * off entirely (e.g. in a staging build). Measurement IDs are public by nature
  * (they ship in the page HTML), so a default here leaks nothing.
  *
- * GA remains consent-gated regardless of how the ID is supplied: no request reaches
- * Google until the visitor accepts the banner. See src/components/Analytics.astro.
+ * GA loads on every page view; visitors can opt out per device on the privacy page.
+ * See src/components/Analytics.astro.
  */
 export const GA_MEASUREMENT_ID =
   import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? 'G-0LT2L2MLY3';

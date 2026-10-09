@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { GA_MEASUREMENT_ID } from '../site-config';
-const updated = 'August 25, 2026';
+const updated = 'October 8, 2026';
 const hasGA = Boolean(GA_MEASUREMENT_ID);
 const CONTACT = 'support@sisrallc.com';
 ---
@@ -49,17 +49,51 @@ const CONTACT = 'support@sisrallc.com';
         <a href="https://myadcenter.google.com/" rel="noopener nofollow" target="_blank">Google Ad Settings</a>,
         and out of many other vendors at
         <a href="https://optout.aboutads.info/" rel="noopener nofollow" target="_blank">optout.aboutads.info</a>.
-        Where required by law, we ask for your consent before setting non-essential cookies,
-        and you can change that choice at any time through the cookie banner.
       </p>
       {hasGA && (
-        <p>
-          Google Analytics runs on this site only if you allowed it. No request is made
-          to Google until you accept, and declining is remembered.
-          <button type="button" data-reset-analytics class="btn btn-ghost" style="margin-left:.5rem;font-size:.85rem;padding:.3rem .7rem">
-            Change my analytics choice
-          </button>
-        </p>
+        <>
+          <h3>Google Analytics</h3>
+          <p>
+            This site uses Google Analytics on every page to understand which pages are
+            read and how visitors find them. Google Analytics sets cookies and receives
+            standard technical data (pages viewed, referring page, approximate location
+            derived from IP address, browser and device type). It never receives anything
+            you type into our tools. Google's handling of that data is described in its
+            <a href="https://policies.google.com/technologies/partner-sites" rel="noopener nofollow" target="_blank">partner sites policy</a>.
+          </p>
+          <p>
+            You can turn Google Analytics off for this site on this device - the choice is
+            remembered in your browser - or block it everywhere with Google's
+            <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener nofollow" target="_blank">opt-out browser add-on</a>.
+          </p>
+          <p>
+            <button type="button" id="ga-optout" class="btn btn-ghost" style="font-size:.85rem;padding:.3rem .7rem">
+              Turn off Google Analytics on this device
+            </button>
+            <span id="ga-optout-status" style="margin-left:.5rem;font-size:.88rem;color:var(--text-muted)"></span>
+          </p>
+          <script is:inline>
+            (function () {
+              var KEY = 'wmc-analytics-optout';
+              var btn = document.getElementById('ga-optout');
+              var status = document.getElementById('ga-optout-status');
+              function render() {
+                var off = false;
+                try { off = localStorage.getItem(KEY) === '1'; } catch (e) {}
+                btn.textContent = off ? 'Turn Google Analytics back on' : 'Turn off Google Analytics on this device';
+                status.textContent = off ? 'Currently off on this device.' : 'Currently on.';
+              }
+              btn.addEventListener('click', function () {
+                try {
+                  if (localStorage.getItem(KEY) === '1') localStorage.removeItem(KEY);
+                  else localStorage.setItem(KEY, '1');
+                } catch (e) {}
+                render();
+              });
+              render();
+            })();
+          </script>
+        </>
       )}
       <p>
         We deliberately do not place advertising or analytics identifiers on pages in a way

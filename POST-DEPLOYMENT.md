@@ -27,10 +27,9 @@ bottom; the order matters for the first three.
 
 - [ ] **Turn on analytics.** Two supported options, set as environment variables in
       the host's settings and redeploy (see .env.example):
-      - `PUBLIC_GA_MEASUREMENT_ID` - Google Analytics 4. The consent banner appears
-        automatically; no request reaches Google until a visitor accepts, and the
-        choice is changeable on the privacy page. Create the GA4 property first and
-        set data retention + IP settings consciously.
+      - Google Analytics 4 is on by default (G-0LT2L2MLY3). In the GA4 property, set
+        data retention and confirm data is arriving. If you will have EU/UK visitors,
+        revisit whether a consent banner is legally required for you.
       - `PUBLIC_GOATCOUNTER_CODE` - cookieless GoatCounter, no banner at all.
       Either way: never add analytics events that carry values a reader typed into a
       tool, and never in a way that associates a visitor with a health condition.

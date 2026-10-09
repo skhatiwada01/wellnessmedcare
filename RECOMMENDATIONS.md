@@ -67,8 +67,8 @@ A privacy engineer reviewed every script in `src/`. Findings:
   any tool. Word/CSV generation and printing are fully local.
 - **Storage is two localStorage keys**, both choices rather than typed input: theme
   and analytics consent. Nothing a reader types is persisted anywhere.
-- **Third-party requests**: Google Analytics loads only after explicit consent
-  (verified: zero requests to Google before accept). The newsletter form, when
+- **Third-party requests**: Google Analytics loads on every page (changed October
+  2026 by request; previously consent-gated), with a per-device opt-out on the privacy page. The newsletter form, when
   enabled, POSTs the email directly to the configured provider - now accurately
   described in the privacy policy ("goes directly to our email service provider").
   Pagefind search fetches index fragments from this site's own origin only.
@@ -81,9 +81,8 @@ A privacy engineer reviewed every script in `src/`. Findings:
   and stores no personal data, which is the standard justification, but it does send
   page, referrer, and user-agent to gc.zgo.at per view. If you want one uniform
   standard, gate it behind the same consent banner as GA (small change).
-- **GA's measurement ID is baked into every production build** (by your request).
-  The consent gate protects visitors; just be aware every deploy is a live-analytics
-  deploy unless `PUBLIC_GA_MEASUREMENT_ID=` (empty) is set.
+- **GA now loads without consent.** Fine for US visitors under current US law; if the
+  site draws meaningful EU/UK traffic, a consent banner becomes a legal requirement there.
 
 ---
 
